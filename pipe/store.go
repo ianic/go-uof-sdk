@@ -56,20 +56,20 @@ func filename(m *uof.Message) string {
 	case uof.MessageKindLexicon:
 		switch m.Type {
 		case uof.MessageTypePlayer:
-			return fmt.Sprintf("/state/%s/players/%08d/%13d", m.Lang, m.Player.ID, m.RequestedAt)
+			return fmt.Sprintf("/state/%s/players/%08d", m.Lang, m.Player.ID)
 		case uof.MessageTypeMarkets:
 			if len(m.Markets) > 1 {
-				return fmt.Sprintf("/state/%s/markets/%s/%13d", m.Lang, m.Lang, m.RequestedAt)
+				return fmt.Sprintf("/state/%s/markets/%s", m.Lang, m.Lang)
 			}
 			s := m.Markets[0]
-			return fmt.Sprintf("/state/%s/markets/%08d-%08d/%13d", m.Lang, s.ID, s.VariantID, m.RequestedAt)
+			return fmt.Sprintf("/state/%s/markets/%08d-%08d", m.Lang, s.ID, s.VariantID)
 		case uof.MessageTypeFixture:
 			if m.EventURN == "" {
-				return fmt.Sprintf("/state/%s/fixtures/%08d/%13d", m.Lang, m.EventID, m.RequestedAt)
+				return fmt.Sprintf("/state/%s/fixtures/%08d", m.Lang, m.EventID)
 			}
 			return fmt.Sprintf("/state/%s/fixtures/%s", m.Lang, m.EventURN)
 		case uof.MessageTypeCompetitor:
-			return fmt.Sprintf("/state/%s/competitors/%08d/%13d", m.Lang, m.Competitor.ID, m.RequestedAt)
+			return fmt.Sprintf("/state/%s/competitors/%08d", m.Lang, m.Competitor.ID)
 		case uof.MessageTypeTournament:
 			return fmt.Sprintf("/state/%s/tournaments/%s", m.Lang, m.EventURN)
 		}

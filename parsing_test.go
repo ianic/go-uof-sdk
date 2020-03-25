@@ -172,6 +172,10 @@ func TestSnaphotComplete(t *testing.T) {
 	assert.Equal(t, sc, m.SnapshotComplete)
 }
 
+// values used in markets test and odds_chages tests
+const testMarketsSrPointRangeVariantID = 3765204422
+const testMarketsSrPointRangeOutcomeID = 1710597451
+
 func TestMarkets(t *testing.T) {
 	buf, err := ioutil.ReadFile("./testdata/markets-0.xml")
 	assert.Nil(t, err)
@@ -180,7 +184,7 @@ func TestMarkets(t *testing.T) {
 	err = xml.Unmarshal(buf, ms)
 	assert.Nil(t, err)
 
-	assert.Len(t, ms.Markets, 7)
+	assert.Len(t, ms.Markets, 8)
 	m := ms.Markets[0]
 	assert.Equal(t, 1, m.ID)
 	assert.Equal(t, 0, m.VariantID)
@@ -220,6 +224,11 @@ func TestMarkets(t *testing.T) {
 	assert.Len(t, m.Groups, 0)
 	assert.Len(t, m.Outcomes, 3)
 	//testu.PP(ms)
+
+	m = ms.Markets[7]
+	assert.Equal(t, 145, m.ID)
+	assert.Equal(t, testMarketsSrPointRangeVariantID, m.VariantID)
+	assert.Equal(t, testMarketsSrPointRangeOutcomeID, m.Outcomes[0].ID)
 
 	assert.Equal(t, &ms.Markets[4], ms.Markets.Find(575))
 	assert.Len(t, ms.Markets.Groups(), 5)

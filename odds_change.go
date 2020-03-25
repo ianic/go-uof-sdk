@@ -17,7 +17,7 @@ type OddsChange struct {
 	EventURN URN `xml:"event_id,attr" json:"eventURN"`
 	// Specifies which producer generated these odds. At any given point in time
 	// there should only be one product generating odds for a particular event.
-	Producer  Producer `xml:"product,attr" json:"producer"`
+	Producer  Producer `xml:"product,attr" json:"producer,omitempty"`
 	Timestamp int      `xml:"timestamp,attr" json:"timestamp"`
 	Markets   []Market `json:"market,omitempty"`
 	// values in range 0-6   /v1/descriptions/betting_status.xml
@@ -50,8 +50,9 @@ type OddsGenerationProperties struct {
 // LineID is hash of specifier field used to uniquely identify lines in one market.
 // One market line is uniquely identified by market id and line id.
 type Market struct {
-	ID            int               `xml:"id,attr" json:"id"`
-	LineID        int               `json:"lineID"`
+	ID            int               `xml:"id,attr" json:"id,omitempty"`
+	LineID        int               `json:"lineID,omitempty"`
+	VariantID     int               `json:"variantID,omitempty"`
 	Specifiers    map[string]string `json:"sepcifiers,omitempty"`
 	Status        MarketStatus      `xml:"status,attr,omitempty" json:"status,omitempty"`
 	CashoutStatus *CashoutStatus    `xml:"cashout_status,attr,omitempty" json:"cashoutStatus,omitempty"`
@@ -70,8 +71,8 @@ type MarketMetadata struct {
 
 type Outcome struct {
 	ID            int      `json:"id"`
-	PlayerID      int      `json:"playerID"`
-	Competitors   []int    `json:"competitors"`
+	PlayerID      int      `json:"playerID,omitempty"`
+	Competitors   []int    `json:"competitors,omitempty"`
 	Odds          *float64 `xml:"odds,attr,omitempty" json:"odds,omitempty"`
 	Probabilities *float64 `xml:"probabilities,attr,omitempty" json:"probabilities,omitempty"`
 	Active        *bool    `xml:"active,attr,omitempty" json:"active,omitempty"`
@@ -129,6 +130,7 @@ func (m *Market) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 	m.Specifiers = toSpecifiers(overlay.Specifiers, overlay.ExtendedSpecifiers)
 	m.LineID = toLineID(overlay.Specifiers)
+	m.VariantID = toVariantID(m.VariantSpecifier())
 	if overlay.MarketMetadata != nil {
 		m.NextBetstop = overlay.MarketMetadata.NextBetstop
 	}

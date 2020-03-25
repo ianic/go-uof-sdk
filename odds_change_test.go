@@ -176,6 +176,12 @@ func testEachVariantMarket(t *testing.T, oc *OddsChange) {
 	})
 	assert.Len(t, variant, 1)
 	assert.Equal(t, "sr:point_range:76+", variant[145])
+
+	variantID := variant[145]
+	assert.Equal(t, toVariantID(variantID), oc.Markets[6].VariantID)
+	assert.Equal(t, testMarketsSrPointRangeVariantID, oc.Markets[6].VariantID)
+	assert.Equal(t, testMarketsSrPointRangeOutcomeID, oc.Markets[6].Outcomes[0].ID)
+	//pp(oc.Markets[6])
 }
 
 func TestNilMethodCalls(t *testing.T) {
