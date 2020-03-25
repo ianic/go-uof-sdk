@@ -370,7 +370,7 @@ func TestFixtureTournament(t *testing.T) {
 	assert.Len(t, ft.Groups, 6)
 	assert.Len(t, ft.Groups[0].Competitors, 4)
 	assert.Equal(t, "Jamaica", ft.Groups[0].Competitors[2].Name)
-	pp(ft)
+	//pp(ft)
 }
 
 func TestBetSettlementToResult(t *testing.T) {

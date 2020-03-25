@@ -167,14 +167,21 @@ const NoURN = URN("")
 // !!! Refactored to Producer + EventID in producer.
 //nolint:gocyclo //accepting complexity of 23
 func (u URN) EventID() int {
-	id, prefix := u.split()
+	id, _ := u.split()
 	if id == 0 {
 		return 0
 	}
 	if u.Producer() != ProducerUnknown {
 		return id
 	}
+	return u.uniqueEventID()
+}
 
+func (u URN) uniqueEventID() int {
+	id, prefix := u.split()
+	if id == 0 {
+		return 0
+	}
 	suffixID := func(suffix int8) int {
 		return -(id<<8 | int(suffix))
 	}

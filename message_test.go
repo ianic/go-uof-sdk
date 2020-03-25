@@ -46,7 +46,7 @@ func TestMessageParseRoutingKeys(t *testing.T) {
 					Priority: MessagePriorityHigh,
 					SportID:  7,
 					EventURN: "vf:match:12345",
-					EventID:  -3160336,
+					EventID:  12345,
 				},
 			},
 		},
@@ -417,7 +417,7 @@ func TestEnrichHeaderAfterUnpack(t *testing.T) {
 		assert.Equal(t, 1234578910111, qm.Timestamp)
 		assert.Equal(t, getTsFromMsg(qm), qm.Timestamp)
 		assert.Equal(t, getProducerFromMsg(qm), qm.Producer)
-		t.Logf("prod: %s ts: %d msg type: %s \n", qm.Producer, qm.Timestamp, qm.Type.String())
+		//t.Logf("prod: %s ts: %d msg type: %s \n", qm.Producer, qm.Timestamp, qm.Type.String())
 	}
 }
 

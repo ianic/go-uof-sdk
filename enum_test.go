@@ -83,10 +83,10 @@ func TestMessageTypes(t *testing.T) {
 }
 
 func TestURNEventID(t *testing.T) {
-	assert.Equal(t, -0xff01, URN("sr:stage:255").EventID())
-	assert.Equal(t, -0xff02, URN("sr:season:255").EventID())
-	assert.Equal(t, -0xff1C, URN("vti:tournament:255").EventID())
-	assert.Equal(t, 0, URN("pero:zdero:255").EventID())
+	assert.Equal(t, -0xff01, URN("sr:stage:255").uniqueEventID())
+	assert.Equal(t, -0xff02, URN("sr:season:255").uniqueEventID())
+	assert.Equal(t, -0xff1C, URN("vti:tournament:255").uniqueEventID())
+	assert.Equal(t, 0, URN("pero:zdero:255").uniqueEventID())
 
 	data := []struct {
 		u  string
@@ -124,7 +124,7 @@ func TestURNEventID(t *testing.T) {
 		{"pero:zdero:255", 0},
 	}
 	for _, d := range data {
-		assert.Equal(t, d.id, URN(d.u).EventID())
+		assert.Equal(t, d.id, URN(d.u).uniqueEventID())
 	}
 }
 
