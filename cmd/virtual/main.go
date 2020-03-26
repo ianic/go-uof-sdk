@@ -67,7 +67,7 @@ func main() {
 	var pc uof.ProducersChange
 	pc.AddAll(uof.VirtualProducers(), timestamp)
 
-	err := sdk.Run(exitSignal(),
+	err := sdk.RunSimple(exitSignal(),
 		sdk.Credentials(bookmakerID, token),
 		sdk.Staging(),
 		sdk.BindVirtuals(),

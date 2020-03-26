@@ -70,7 +70,7 @@ func main() {
 	pc.Add(uof.ProducerPrematch, timestamp)
 	pc.Add(uof.ProducerLiveOdds, timestamp)
 
-	err := sdk.Run(exitSignal(),
+	err := sdk.RunSimple(exitSignal(),
 		sdk.Credentials(bookmakerID, token),
 		sdk.Staging(),
 		sdk.Recovery(pc),

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"log"
@@ -83,15 +84,36 @@ func exitSignal() context.Context {
 func main() {
 	go debugHTTP()
 
-	err := sdk.Run(exitSignal(),
+	ctx, cancel := context.WithCancel(exitSignal())
+	defer cancel()
+
+	errc, err := sdk.Run(ctx,
 		sdk.Credentials(bookmakerID, token),
-		sdk.Languages(uof.Languages("en,de,hr")),
+		sdk.Languages(uof.Languages("en")),
 		sdk.BufferedConsumer(pipe.FileStore(outputFolder), 1024),
 		sdk.Callback(progress),
+		//sdk.BindSports(),
 		sdk.Replay(startReplay),
 	)
 	if err != nil {
 		log.Fatal(err)
+	}
+	for err := range errc {
+		fmt.Println()
+		var e uof.Error
+		if errors.As(err, &e) {
+			if e.Severity == uof.NoticeSeverity {
+				log.Printf("notice: %s", err)
+				continue
+			}
+		}
+
+		var ae uof.APIError
+		if errors.As(err, &ae) {
+			log.Printf("api error:api %s", err)
+		}
+		log.Printf("error: %s", err)
+		//cancel()
 	}
 }
 

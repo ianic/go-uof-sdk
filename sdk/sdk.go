@@ -29,24 +29,32 @@ type Config struct {
 // Option sets attributes on the Config.
 type Option func(*Config)
 
+func RunSimple(ctx context.Context, options ...Option) error {
+	errc, err := Run(ctx, options...)
+	if err != nil {
+		return err
+	}
+	return firstErr(errc)
+}
+
 // Run starts uof connector.
 //
 // Call to Run blocks until stopped by context, or error occurred.
 // Order in which options are set is not important.
 // Credentials and one of Callback or Pipe are functional minimum.
-func Run(ctx context.Context, options ...Option) error {
+func Run(ctx context.Context, options ...Option) (<-chan error, error) {
 	c := config(options...)
 	qc, apiConn, err := connect(ctx, c)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if c.Replay != nil {
 		rpl, err := api.Replay(ctx, c.Token)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		if err := c.Replay(rpl); err != nil {
-			return err
+			return nil, err
 		}
 	}
 
@@ -66,7 +74,7 @@ func Run(ctx context.Context, options ...Option) error {
 		queue.WithReconnect(ctx, qc),
 		stages...,
 	)
-	return firstErr(errc)
+	return errc, nil
 }
 
 func firstErr(errc <-chan error) error {
