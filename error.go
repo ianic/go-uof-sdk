@@ -1,6 +1,9 @@
 package uof
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 // Inspiration:
 //   https://peter.bourgon.org/blog/2019/09/11/programming-with-errors.html
@@ -75,3 +78,13 @@ const (
 	LogSeverity    ErrorSeverity = iota // log for later
 	NoticeSeverity                      // oprator should be notified about this error
 )
+
+func IsApiNotFoundErr(err error) bool {
+	var ae APIError
+	if errors.As(err, &ae) {
+		if ae.StatusCode == 404 {
+			return true
+		}
+	}
+	return false
+}

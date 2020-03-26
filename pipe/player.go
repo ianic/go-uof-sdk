@@ -61,7 +61,9 @@ func (p *player) get(playerID, requestedAt int) {
 			p.em.insert(key)
 			ap, err := p.api.Player(lang, playerID)
 			if err != nil {
-				p.em.remove(key)
+				if !uof.IsApiNotFoundErr(err) {
+					p.em.remove(key)
+				}
 				p.errc <- err
 				return
 			}
