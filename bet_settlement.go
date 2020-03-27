@@ -30,7 +30,7 @@ type BetSettlementMarket struct {
 
 type BetSettlementOutcome struct {
 	ID             int           `json:"id"`
-	PlayerID       int           `json:"playerID"`
+	PlayerID       int           `json:"playerID,omitempty"`
 	Result         OutcomeResult `json:"result"`
 	DeadHeatFactor float64       `json:"deadHeatFactor,omitempty"`
 }
