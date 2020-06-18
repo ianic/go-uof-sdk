@@ -16,14 +16,14 @@ import (
 // call to lookup the updated fixture information.
 // Reference: https://docs.betradar.com/display/BD/UOF+-+Fixture+change
 type FixtureChange struct {
-	EventID      int                `json:"eventID"`
-	EventURN     URN                `xml:"event_id,attr" json:"eventURN"`
-	Producer     Producer           `xml:"product,attr" json:"producer"`
-	Timestamp    int                `xml:"timestamp,attr" json:"timestamp"`
-	RequestID    *int               `xml:"request_id,attr,omitempty" json:"requestID,omitempty"`
-	ChangeType   *FixtureChangeType `xml:"change_type,attr,omitempty" json:"changeType,omitempty"`
-	StartTime    *int               `xml:"start_time,attr" json:"startTime"`
-	NextLiveTime *int               `xml:"next_live_time,attr,omitempty" json:"nextLiveTime,omitempty"`
+	EventID      int                `json:"eventId" bson:"eventId,omitempty"`
+	EventURN     URN                `xml:"event_id,attr" json:"eventURN" bson:"eventURN,omitempty"`
+	Producer     Producer           `xml:"product,attr" json:"producer" bson:"producer,omitempty"`
+	Timestamp    int                `xml:"timestamp,attr" json:"timestamp" bson:"timestamp,omitempty"`
+	RequestID    *int               `xml:"request_id,attr,omitempty" json:"requestId,omitempty" bson:"requestId,omitempty"`
+	ChangeType   *FixtureChangeType `xml:"change_type,attr,omitempty" json:"changeType,omitempty" bson:"changeType,omitempty"`
+	StartTime    *int               `xml:"start_time,attr" json:"startTime" bson:"startTime,omitempty"`
+	NextLiveTime *int               `xml:"next_live_time,attr,omitempty" json:"nextLiveTime,omitempty" bson:"nextLiveTime,omitempty"`
 }
 
 func (fc *FixtureChange) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {

@@ -13,30 +13,30 @@ import (
 // reported.
 // Reference: https://docs.betradar.com/display/BD/UOF+-+Odds+change
 type OddsChange struct {
-	EventID  int `json:"eventID"`
-	EventURN URN `xml:"event_id,attr" json:"eventURN"`
+	EventID  int `json:"eventId" bson:"eventId,omitempty"`
+	EventURN URN `xml:"event_id,attr" json:"eventURN" bson:"eventURN,omitempty"`
 	// Specifies which producer generated these odds. At any given point in time
 	// there should only be one product generating odds for a particular event.
-	Producer  Producer `xml:"product,attr" json:"producer,omitempty"`
-	Timestamp int      `xml:"timestamp,attr" json:"timestamp"`
-	Markets   []Market `json:"markets,omitempty"`
+	Producer  Producer `xml:"product,attr" json:"producer,omitempty" bson:"producer,omitempty"`
+	Timestamp int      `xml:"timestamp,attr" json:"timestamp" bson:"timestamp,omitempty"`
+	Markets   []Market `json:"markets,omitempty" bson:"markets,omitempty"`
 	// values in range 0-6   /v1/descriptions/betting_status.xml
-	BettingStatus *int `json:"bettingStatus,omitempty"`
+	BettingStatus *int `json:"bettingStatus,omitempty" bson:"bettingStatus,omitempty"`
 	// values in range 0-87  /v1/descriptions/betstop_reasons.xml
-	BetstopReason    *int              `json:"betstopReason,omitempty"`
-	OddsChangeReason *int              `xml:"odds_change_reason,attr,omitempty" json:"oddsChangeReason,omitempty"` // May be one of 1
-	EventStatus      *SportEventStatus `xml:"sport_event_status,omitempty" json:"sportEventStatus,omitempty"`
+	BetstopReason    *int              `json:"betstopReason,omitempty" bson:"betstopReason,omitempty"`
+	OddsChangeReason *int              `xml:"odds_change_reason,attr,omitempty" json:"oddsChangeReason,omitempty" bson:"oddsChangeReason,omitempty"` // May be one of 1
+	EventStatus      *SportEventStatus `xml:"sport_event_status,omitempty" json:"sportEventStatus,omitempty" bson:"eventStatus,omitempty"`
 
-	OddsGenerationProperties *OddsGenerationProperties `xml:"odds_generation_properties,omitempty" json:"oddsGenerationProperties,omitempty"`
-	RequestID                *int                      `xml:"request_id,attr,omitempty" json:"requestID,omitempty"`
+	OddsGenerationProperties *OddsGenerationProperties `xml:"odds_generation_properties,omitempty" json:"oddsGenerationProperties,omitempty" bson:"oddsGenerationProperties,omitempty"`
+	RequestID                *int                      `xml:"request_id,attr,omitempty" json:"requestId,omitempty" bson:"requestId,omitempty"`
 }
 
 // Provided by the prematch odds producer only, and contains a few
 // key-parameters that can be used in a client’s own special odds model, or
 // even offer spread betting bets based on it.
 type OddsGenerationProperties struct {
-	ExpectedTotals    *float64 `xml:"expected_totals,attr,omitempty" json:"expectedTotals,omitempty"`
-	ExpectedSupremacy *float64 `xml:"expected_supremacy,attr,omitempty" json:"expectedSupremacy,omitempty"`
+	ExpectedTotals    *float64 `xml:"expected_totals,attr,omitempty" json:"expectedTotals,omitempty" bson:"expectedTotals,omitempty"`
+	ExpectedSupremacy *float64 `xml:"expected_supremacy,attr,omitempty" json:"expectedSupremacy,omitempty" bson:"expectedSupremacy,omitempty"`
 }
 
 // Market describes the odds updates for a particular market.
@@ -50,33 +50,33 @@ type OddsGenerationProperties struct {
 // LineID is hash of specifier field used to uniquely identify lines in one market.
 // One market line is uniquely identified by market id and line id.
 type Market struct {
-	ID            int               `xml:"id,attr" json:"id,omitempty"`
-	LineID        int               `json:"lineID,omitempty"`
-	VariantID     int               `json:"variantID,omitempty"`
-	Specifiers    map[string]string `json:"sepcifiers,omitempty"`
-	Status        MarketStatus      `xml:"status,attr,omitempty" json:"status,omitempty"`
-	CashoutStatus *CashoutStatus    `xml:"cashout_status,attr,omitempty" json:"cashoutStatus,omitempty"`
+	ID            int               `xml:"id,attr" json:"id,omitempty" bson:"id,omitempty"`
+	LineID        int               `json:"lineId,omitempty" bson:"lineId,omitempty"`
+	VariantID     int               `json:"variantId,omitempty" bson:"variantId,omitempty"`
+	Specifiers    map[string]string `json:"sepcifiers,omitempty" bson:"specifiers,omitempty"`
+	Status        MarketStatus      `xml:"status,attr,omitempty" json:"status,omitempty" bson:"status,omitempty"`
+	CashoutStatus *CashoutStatus    `xml:"cashout_status,attr,omitempty" json:"cashoutStatus,omitempty" bson:"cashoutStatus,omitempty"`
 	// If present, this is set to 1, which states that this is the most balanced
 	// or recommended market line. This setting makes most sense for markets where
 	// multiple lines are provided (e.g. the Totals market).
-	Favourite *bool     `xml:"favourite,attr,omitempty" json:"favourite,omitempty"`
-	Outcomes  []Outcome `xml:"outcome,omitempty" json:"outcomes,omitempty"`
+	Favourite *bool     `xml:"favourite,attr,omitempty" json:"favourite,omitempty" bson:"favourite,omitempty"`
+	Outcomes  []Outcome `xml:"outcome,omitempty" json:"outcomes,omitempty" bson:"outcomes,omitempty"`
 	// Timestamp in UTC when to betstop this market. Typically used for outrights
 	// and typically is the start-time of the event the market refers to.
-	NextBetstop *int `json:"nextBetstop,omitempty"`
+	NextBetstop *int `json:"nextBetstop,omitempty" bson:"nextBetstop,omitempty"`
 }
 type MarketMetadata struct {
-	NextBetstop *int `xml:"next_betstop,attr,omitempty" json:"nextBetstop,omitempty"`
+	NextBetstop *int `xml:"next_betstop,attr,omitempty" json:"nextBetstop,omitempty" bson:"nextBetstop,omitempty"`
 }
 
 type Outcome struct {
-	ID            int      `json:"id"`
-	PlayerID      int      `json:"playerID,omitempty"`
-	Competitors   []int    `json:"competitors,omitempty"`
-	Odds          *float64 `xml:"odds,attr,omitempty" json:"odds,omitempty"`
-	Probabilities *float64 `xml:"probabilities,attr,omitempty" json:"probabilities,omitempty"`
-	Active        *bool    `xml:"active,attr,omitempty" json:"active,omitempty"`
-	Team          *Team    `xml:"team,attr,omitempty" json:"team,omitempty"`
+	ID            int      `json:"id" bson:"id,omitempty"`
+	PlayerID      int      `json:"playerId,omitempty" bson:"playerId,omitempty"`
+	Competitors   []int    `json:"competitors,omitempty" bson:"competitors,omitempty"`
+	Odds          *float64 `xml:"odds,attr,omitempty" json:"odds,omitempty" bson:"odds,omitempty"`
+	Probabilities *float64 `xml:"probabilities,attr,omitempty" json:"probabilities,omitempty" bson:"probabilities,omitempty"`
+	Active        *bool    `xml:"active,attr,omitempty" json:"active,omitempty" bson:"active,omitempty"`
+	Team          *Team    `xml:"team,attr,omitempty" json:"team,omitempty" bson:"team,omitempty"`
 }
 
 // UnmarshalXML
@@ -85,10 +85,10 @@ func (o *OddsChange) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 	var overlay struct {
 		*T
 		Odds *struct {
-			Markets       []Market `xml:"market,omitempty"`
-			BettingStatus *int     `xml:"betting_status,attr,omitempty"`
-			BetstopReason *int     `xml:"betstop_reason,attr,omitempty"`
-		} `xml:"odds,omitempty"`
+			Markets       []Market `xml:"market,omitempty" bson:"markets,omitempty"`
+			BettingStatus *int     `xml:"betting_status,attr,omitempty" bson:"bettingStatus,omitempty"`
+			BetstopReason *int     `xml:"betstop_reason,attr,omitempty" bson:"betstopReason,omitempty"`
+		} `xml:"odds,omitempty" bson:"odds,omitempty"`
 	}
 	overlay.T = (*T)(o)
 	if err := d.DecodeElement(&overlay, &start); err != nil {
@@ -114,8 +114,8 @@ func (m *Market) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var overlay struct {
 		*T
 		Status             *int8  `xml:"status,attr,omitempty"`
-		Specifiers         string `xml:"specifiers,attr,omitempty" json:"specifiers,omitempty"`
-		ExtendedSpecifiers string `xml:"extended_specifiers,attr,omitempty" json:"extendedSpecifiers,omitempty"`
+		Specifiers         string `xml:"specifiers,attr,omitempty"`
+		ExtendedSpecifiers string `xml:"extended_specifiers,attr,omitempty"`
 		MarketMetadata     *struct {
 			NextBetstop *int `xml:"next_betstop,attr,omitempty"`
 		} `xml:"market_metadata,omitempty"`

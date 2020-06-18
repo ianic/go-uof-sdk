@@ -12,46 +12,46 @@ import (
 )
 
 type Header struct {
-	Type        MessageType     `json:"type,omitempty"`
-	Scope       MessageScope    `json:"scope,omitempty"`
-	Priority    MessagePriority `json:"priority,omitempty"`
-	Lang        Lang            `json:"lang,omitempty"`
-	SportID     int             `json:"sportID,omitempty"`
-	EventID     int             `json:"eventID,omitempty"`
-	EventURN    URN             `json:"eventURN,omitempty"`
-	ReceivedAt  int             `json:"receivedAt,omitempty"`
-	RequestedAt int             `json:"requestedAt,omitempty"`
-	Producer    Producer        `json:"producer,omitempty"`
-	Timestamp   int             `json:"timestamp,omitempty"`
+	Type        MessageType     `json:"type,omitempty" bson:"type,omitempty"`
+	Scope       MessageScope    `json:"scope,omitempty" bson:"scope,omitempty"`
+	Priority    MessagePriority `json:"priority,omitempty" bson:"priority,omitempty"`
+	Lang        Lang            `json:"lang,omitempty" bson:"lang,omitempty"`
+	SportID     int             `json:"sportId,omitempty" bson:"sportId,omitempty"`
+	EventID     int             `json:"eventId,omitempty" bson:"eventId,omitempty"`
+	EventURN    URN             `json:"eventURN,omitempty" bson:"eventURN,omitempty"`
+	ReceivedAt  int             `json:"receivedAt,omitempty" bson:"receivedAt,omitempty"`
+	RequestedAt int             `json:"requestedAt,omitempty" bson:"requestedAt,omitempty"`
+	Producer    Producer        `json:"producer,omitempty" bson:"producer,omitempty"`
+	Timestamp   int             `json:"timestamp,omitempty" bson:"timestamp,omitempty"`
 }
 
 type Body struct {
 	// queue message types
 	// Ref: https://docs.betradar.com/display/BD/UOF+-+Messages
-	Alive                 *Alive                 `json:"alive,omitempty"`
-	BetCancel             *BetCancel             `json:"betCancel,omitempty"`
-	RollbackBetSettlement *RollbackBetSettlement `json:"rollbackBetSettlement,omitempty"`
-	RollbackBetCancel     *RollbackBetCancel     `json:"rollbackBetCancel,omitempty"`
-	SnapshotComplete      *SnapshotComplete      `json:"snapshotComplete,omitempty"`
-	OddsChange            *OddsChange            `json:"oddsChange,omitempty"`
-	FixtureChange         *FixtureChange         `json:"fixtureChange,omitempty"`
-	BetSettlement         *BetSettlement         `json:"betSettlement,omitempty"`
-	BetStop               *BetStop               `json:"betStop,omitempty"`
+	Alive                 *Alive                 `json:"alive,omitempty" bson:"alive,omitempty"`
+	BetCancel             *BetCancel             `json:"betCancel,omitempty" bson:"betCancel,omitempty"`
+	RollbackBetSettlement *RollbackBetSettlement `json:"rollbackBetSettlement,omitempty" bson:"rollbackBetSettlement,omitempty"`
+	RollbackBetCancel     *RollbackBetCancel     `json:"rollbackBetCancel,omitempty" bson:"rollbackBetCancel,omitempty"`
+	SnapshotComplete      *SnapshotComplete      `json:"snapshotComplete,omitempty" bson:"snapshotComplete,omitempty"`
+	OddsChange            *OddsChange            `json:"oddsChange,omitempty" bson:"oddsChange,omitempty"`
+	FixtureChange         *FixtureChange         `json:"fixtureChange,omitempty" bson:"fixtureChange,omitempty"`
+	BetSettlement         *BetSettlement         `json:"betSettlement,omitempty" bson:"betSettlement,omitempty"`
+	BetStop               *BetStop               `json:"betStop,omitempty" bson:"betStop,omitempty"`
 	// api response message types
-	Fixture    *Fixture           `json:"fixture,omitempty"`
-	Markets    MarketDescriptions `json:"markets,omitempty"`
-	Player     *Player            `json:"player,omitempty"`
-	Competitor *CompetitorPlayer  `json:"competitor,omitempty"`
-	Tournament *FixtureTournament `json:"tournament,omitempty"`
+	Fixture    *Fixture           `json:"fixture,omitempty" bson:"fixture,omitempty"`
+	Markets    MarketDescriptions `json:"markets,omitempty" bson:"markets,omitempty"`
+	Player     *Player            `json:"player,omitempty" bson:"player,omitempty"`
+	Competitor *CompetitorPlayer  `json:"competitor,omitempty" bson:"competitor,omitempty"`
+	Tournament *FixtureTournament `json:"tournament,omitempty" bson:"tournament,omitempty"`
 	// sdk status message types
-	Connection *Connection     `json:"connection,omitempty"`
-	Producers  ProducersChange `json:"producerChange,omitempty"`
+	Connection *Connection     `json:"connection,omitempty" bson:"connection,omitempty"`
+	Producers  ProducersChange `json:"producers,omitempty" bson:"producers,omitempty"`
 }
 
 type Message struct {
-	Header `json:",inline"`
-	Raw    []byte `json:"-"`
-	Body   `json:",inline"`
+	Header `json:",inline" bson:",inline"`
+	Raw    []byte `json:"-" bson:"-"`
+	Body   `json:",inline" bson:",inline"`
 }
 
 var uniqTimestamp func() int // ensures unique timestamp value

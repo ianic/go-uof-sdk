@@ -7,7 +7,7 @@ import (
 
 // Markets betradar api response
 type MarketsRsp struct {
-	Markets MarketDescriptions `xml:"market,omitempty" json:"markets,omitempty"`
+	Markets MarketDescriptions `xml:"market,omitempty" json:"markets,omitempty" bson:"markets,omitempty"`
 	// unused
 	//ResponseCode string   `xml:"response_code,attr,omitempty" json:"responseCode,omitempty"`
 	//Location     string   `xml:"location,attr,omitempty" json:"location,omitempty"`
@@ -37,51 +37,51 @@ func (md MarketDescriptions) Groups() map[string][]int {
 }
 
 type MarketDescription struct {
-	ID                     int               `xml:"id,attr" json:"id"`
-	VariantID              int               `json:"variantID,omitempty"`
-	Name                   string            `xml:"name,attr" json:"name,omitempty"`
-	Description            string            `xml:"description,attr,omitempty" json:"description,omitempty"`
-	IncludesOutcomesOfType string            `xml:"includes_outcomes_of_type,attr,omitempty" json:"includesOutcomesOfType,omitempty"`
-	Variant                string            `xml:"variant,attr,omitempty" json:"variant,omitempty"`
-	OutcomeType            OutcomeType       `json:"outcomeType,omitempty"`
-	Groups                 []string          `json:"groups,omitempty"`
-	Outcomes               []MarketOutcome   `xml:"outcomes>outcome,omitempty" json:"outcomes,omitempty"`
-	Specifiers             []MarketSpecifier `xml:"specifiers>specifier,omitempty" json:"specifiers,omitempty"`
-	Attributes             []MarketAttribute `xml:"attributes>attribute,omitempty" json:"attributes,omitempty"`
+	ID                     int               `xml:"id,attr" json:"id" bson:"id,omitempty"`
+	VariantID              int               `json:"variantId,omitempty" bson:"variantId,omitempty"`
+	Name                   string            `xml:"name,attr" json:"name,omitempty" bson:"name,omitempty"`
+	Description            string            `xml:"description,attr,omitempty" json:"description,omitempty" bson:"description,omitempty"`
+	IncludesOutcomesOfType string            `xml:"includes_outcomes_of_type,attr,omitempty" json:"includesOutcomesOfType,omitempty" bson:"includesOutcomesOfType,omitempty"`
+	Variant                string            `xml:"variant,attr,omitempty" json:"variant,omitempty" bson:"variant,omitempty"`
+	OutcomeType            OutcomeType       `json:"outcomeType,omitempty" bson:"outcomeType,omitempty"`
+	Groups                 []string          `json:"groups,omitempty" bson:"groups,omitempty"`
+	Outcomes               []MarketOutcome   `xml:"outcomes>outcome,omitempty" json:"outcomes,omitempty" bson:"outcomes,omitempty"`
+	Specifiers             []MarketSpecifier `xml:"specifiers>specifier,omitempty" json:"specifiers,omitempty" bson:"specifiers,omitempty"`
+	Attributes             []MarketAttribute `xml:"attributes>attribute,omitempty" json:"attributes,omitempty" bson:"attributes,omitempty"`
 	//Mappings               []Mapping         `xml:"mappings>mapping,omitempty" json:"mappings,omitempty"`
 }
 
 type MarketOutcome struct {
-	ID          int    `json:"id"`
-	Name        string `xml:"name,attr" json:"name,omitempty"`
-	Description string `xml:"description,attr,omitempty" json:"description,omitempty"`
+	ID          int    `json:"id" bson:"id,omitempty"`
+	Name        string `xml:"name,attr" json:"name,omitempty" bson:"name,omitempty"`
+	Description string `xml:"description,attr,omitempty" json:"description,omitempty" bson:"description,omitempty"`
 }
 
 type MarketSpecifier struct {
-	Type        SpecifierType `json:"type"`
-	Name        string        `xml:"name,attr" json:"name,omitempty"`
-	Description string        `xml:"description,attr,omitempty" json:"description,omitempty"`
+	Type        SpecifierType `json:"type" bson:"type,omitempty"`
+	Name        string        `xml:"name,attr" json:"name,omitempty" bson:"name,omitempty"`
+	Description string        `xml:"description,attr,omitempty" json:"description,omitempty" bson:"description,omitempty"`
 }
 
 type MarketAttribute struct {
-	Name        string `xml:"name,attr" json:"name,omitempty"`
-	Description string `xml:"description,attr" json:"description,omitempty"`
+	Name        string `xml:"name,attr" json:"name,omitempty" bson:"name,omitempty"`
+	Description string `xml:"description,attr" json:"description,omitempty" bson:"description,omitempty"`
 }
 
 // // currently unused but parsing is valid
 // type Mapping struct {
 // 	MappingOutcome []MappingOutcome `xml:"mapping_outcome,omitempty" json:"mappingOutcome,omitempty"`
-// 	ProductID      int              `xml:"product_id,attr" json:"productID"`
-// 	ProductIDs     string           `xml:"product_ids,attr" json:"productIDs"`
-// 	SportID        string           `xml:"sport_id,attr" json:"sportID"`
-// 	MarketID       string           `xml:"market_id,attr" json:"marketID"`
+// 	ProductID      int              `xml:"product_id,attr" json:"productId"`
+// 	ProductIDs     string           `xml:"product_ids,attr" json:"productIds"`
+// 	SportID        string           `xml:"sport_id,attr" json:"sportId"`
+// 	MarketID       string           `xml:"market_id,attr" json:"marketId"`
 // 	SovTemplate    string           `xml:"sov_template,attr,omitempty" json:"sovTemplate,omitempty"`
 // 	ValidFor       string           `xml:"valid_for,attr,omitempty" json:"validFor,omitempty"`
 // }
 
 // type MappingOutcome struct {
-// 	OutcomeID          string `xml:"outcome_id,attr" json:"outcomeID"`
-// 	ProductOutcomeID   string `xml:"product_outcome_id,attr" json:"productOutcomeID"`
+// 	OutcomeID          string `xml:"outcome_id,attr" json:"outcomeId"`
+// 	ProductOutcomeID   string `xml:"product_outcome_id,attr" json:"productOutcomeId"`
 // 	ProductOutcomeName string `xml:"product_outcome_name,attr,omitempty" json:"productOutcomeName,omitempty"`
 // }
 

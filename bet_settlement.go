@@ -3,45 +3,45 @@ package uof
 import "encoding/xml"
 
 type BetSettlement struct {
-	EventID   int      `json:"eventID"`
-	EventURN  URN      `xml:"event_id,attr" json:"eventURN"`
-	Producer  Producer `xml:"product,attr" json:"producer"`
-	Timestamp int      `xml:"timestamp,attr" json:"timestamp"`
-	RequestID *int     `xml:"request_id,attr,omitempty" json:"requestID,omitempty"`
+	EventID   int      `json:"eventId" bson:"eventId,omitempty"`
+	EventURN  URN      `xml:"event_id,attr" json:"eventURN" bson:"eventURN,omitempty"`
+	Producer  Producer `xml:"product,attr" json:"producer" bson:"producer,omitempty"`
+	Timestamp int      `xml:"timestamp,attr" json:"timestamp" bson:"timestamp,omitempty"`
+	RequestID *int     `xml:"request_id,attr,omitempty" json:"requestId,omitempty" bson:"requestId,omitempty"`
 	// Is this bet-settlement sent as a consequence of scouts reporting the
 	// results live (1) or is this bet-settlement sent post-match when the
 	// official results have been confirmed (2)
-	Certainty *int8                 `xml:"certainty,attr" json:"certainty"` // May be one of 1, 2
-	Markets   []BetSettlementMarket `xml:"outcomes>market" json:"markets"`
+	Certainty *int8                 `xml:"certainty,attr" json:"certainty" bson:"certainty,omitempty"` // May be one of 1, 2
+	Markets   []BetSettlementMarket `xml:"outcomes>market" json:"markets" bson:"markets,omitempty"`
 }
 
 type BetSettlementMarket struct {
-	ID         int               `xml:"id,attr" json:"id"`
-	LineID     int               `json:"lineID"`
-	Specifiers map[string]string `json:"specifiers,omitempty"`
+	ID         int               `xml:"id,attr" json:"id" bson:"id,omitempty"`
+	LineID     int               `json:"lineId" bson:"lineId,omitempty"`
+	Specifiers map[string]string `json:"specifiers,omitempty" bson:"specifiers,omitempty"`
 	// Describes the reason for voiding certain outcomes for a particular market.
 	// Only set if at least one of the outcomes have a void_factor. A list of void
 	// reasons can be found above this table or by using the API at
 	// https://iodocs.betradar.com/unifiedfeed#Betting-descriptions-GET-Void-reasons.
-	VoidReason *int                   `xml:"void_reason,attr,omitempty" json:"voidReason,omitempty"`
-	Result     *string                `xml:"result,attr,omitempty" json:"result,omitempty"`
-	Outcomes   []BetSettlementOutcome `xml:"outcome" json:"outcomes"`
+	VoidReason *int                   `xml:"void_reason,attr,omitempty" json:"voidReason,omitempty" bson:"voidReason,omitempty"`
+	Result     *string                `xml:"result,attr,omitempty" json:"result,omitempty" bson:"result,omitempty"`
+	Outcomes   []BetSettlementOutcome `xml:"outcome" json:"outcomes" bson:"outcomes,omitempty"`
 }
 
 type BetSettlementOutcome struct {
-	ID             int           `json:"id"`
-	PlayerID       int           `json:"playerID,omitempty"`
-	Result         OutcomeResult `json:"result"`
-	DeadHeatFactor float64       `json:"deadHeatFactor,omitempty"`
+	ID             int           `json:"id" bson:"id,omitempty"`
+	PlayerID       int           `json:"playerId,omitempty" bson:"playerId,omitempty"`
+	Result         OutcomeResult `json:"result" bson:"result,omitempty"`
+	DeadHeatFactor float64       `json:"deadHeatFactor,omitempty" bson:"deadHeatFactor,omitempty"`
 }
 
 type RollbackBetSettlement struct {
-	EventID   int               `json:"eventID"`
-	EventURN  URN               `xml:"event_id,attr" json:"eventURN"`
-	Producer  Producer          `xml:"product,attr" json:"producer"`
-	Timestamp int               `xml:"timestamp,attr" json:"timestamp"`
-	RequestID *int              `xml:"request_id,attr,omitempty" json:"requestID,omitempty"`
-	Markets   []BetCancelMarket `xml:"market" json:"markets"`
+	EventID   int               `json:"eventId" bson:"eventId,omitempty"`
+	EventURN  URN               `xml:"event_id,attr" json:"eventURN" bson:"eventURN,omitempty"`
+	Producer  Producer          `xml:"product,attr" json:"producer" bson:"producer,omitempty"`
+	Timestamp int               `xml:"timestamp,attr" json:"timestamp" bson:"timestamp,omitempty"`
+	RequestID *int              `xml:"request_id,attr,omitempty" json:"requestId,omitempty" bson:"requestId,omitempty"`
+	Markets   []BetCancelMarket `xml:"market" json:"markets" bson:"markets,omitempty"`
 }
 
 func (t *BetSettlement) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
@@ -91,8 +91,8 @@ func (t *BetSettlementOutcome) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
 	var overlay struct {
 		*T
 		ID             string   `xml:"id,attr"`
-		Result         *int     `xml:"result,attr"`                // May be one of 0, 1, -1
-		VoidFactor     *float64 `xml:"void_factor,attr,omitempty"` // May be one of 0.5, 1
+		Result         *int     `xml:"result,attr"`
+		VoidFactor     *float64 `xml:"void_factor,attr,omitempty"`
 		DeadHeatFactor *float64 `xml:"dead_heat_factor,attr,omitempty"`
 	}
 	overlay.T = (*T)(t)

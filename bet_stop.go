@@ -16,22 +16,22 @@ import (
 // moved to suspended. However, if the market is already deactivated, settled or
 // cancelled this is not a good practice. Only move ACTIVE markets to suspended.
 type BetStop struct {
-	EventID   int          `json:"eventID"`
-	EventURN  URN          `xml:"event_id,attr" json:"eventURN"`
-	Timestamp int          `xml:"timestamp,attr" json:"timestamp"`
-	RequestID *int         `xml:"request_id,attr,omitempty" json:"requestID,omitempty"`
-	Groups    []string     `json:"groups"`
-	MarketIDs []int        `json:"marketsIDs"`
-	Producer  Producer     `xml:"product,attr" json:"producer"`
-	Status    MarketStatus `json:"status,omitempty"`
+	EventID   int          `json:"eventId" bson:"eventId,omitempty"`
+	EventURN  URN          `xml:"event_id,attr" json:"eventURN" bson:"eventURN,omitempty"`
+	Timestamp int          `xml:"timestamp,attr" json:"timestamp" bson:"timestamp,omitempty"`
+	RequestID *int         `xml:"request_id,attr,omitempty" json:"requestId,omitempty" bson:"requestId,omitempty"`
+	Groups    []string     `json:"groups" bson:"groups,omitempty"`
+	MarketIDs []int        `json:"marketsIds" bson:"marketIds,omitempty"`
+	Producer  Producer     `xml:"product,attr" json:"producer" bson:"producer,omitempty"`
+	Status    MarketStatus `json:"status,omitempty" bson:"status,omitempty"`
 }
 
 func (t *BetStop) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	type T BetStop
 	var overlay struct {
 		*T
-		Groups       string `xml:"groups,attr" json:"groups"`
-		MarketStatus *int   `xml:"market_status,attr,omitempty"` // May be one of 1, 0, -1, -2, -3, -4
+		Groups       string `xml:"groups,attr"`
+		MarketStatus *int   `xml:"market_status,attr,omitempty"`
 	}
 	overlay.T = (*T)(t)
 	if err := d.DecodeElement(&overlay, &start); err != nil {

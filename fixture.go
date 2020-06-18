@@ -7,46 +7,46 @@ import (
 )
 
 type FixtureRsp struct {
-	Fixture     Fixture   `xml:"fixture" json:"fixture"`
-	GeneratedAt time.Time `xml:"generated_at,attr,omitempty" json:"generatedAt,omitempty"`
+	Fixture     Fixture   `xml:"fixture" json:"fixture" bson:"fixture,omitempty"`
+	GeneratedAt time.Time `xml:"generated_at,attr,omitempty" json:"generatedAt,omitempty" bson:"generatedAt,omitempty"`
 }
 
 // Fixtures describe static or semi-static information about matches and races.
 // Reference: https://docs.betradar.com/display/BD/UOF+-+Fixtures+in+the+API
 type Fixture struct {
-	ID                 int       `xml:"-" json:"id"`
-	URN                URN       `xml:"id,attr,omitempty" json:"urn"`
-	StartTime          time.Time `xml:"start_time,attr,omitempty" json:"startTime,omitempty"`
-	StartTimeConfirmed bool      `xml:"start_time_confirmed,attr,omitempty" json:"startTimeConfirmed,omitempty"`
-	StartTimeTbd       bool      `xml:"start_time_tbd,attr,omitempty" json:"startTimeTbd,omitempty"`
-	NextLiveTime       time.Time `xml:"next_live_time,attr,omitempty" json:"nextLiveTime,omitempty"`
-	Liveodds           string    `xml:"liveodds,attr,omitempty" json:"liveodds,omitempty"`
-	Status             string    `xml:"status,attr,omitempty" json:"status,omitempty"`
-	Name               string    `xml:"name,attr,omitempty" json:"name,omitempty"`
-	Type               string    `xml:"type,attr,omitempty" json:"type,omitempty"`
-	Scheduled          time.Time `xml:"scheduled,attr,omitempty" json:"scheduled,omitempty"`
-	ScheduledEnd       time.Time `xml:"scheduled_end,attr,omitempty" json:"scheduledEnd,omitempty"`
-	ReplacedBy         string    `xml:"replaced_by,attr,omitempty" json:"replacedBy,omitempty"`
+	ID                 int       `xml:"-" json:"id" bson:"id,omitempty"`
+	URN                URN       `xml:"id,attr,omitempty" json:"urn" bson:"urn,omitempty"`
+	StartTime          time.Time `xml:"start_time,attr,omitempty" json:"startTime,omitempty" bson:"startTime,omitempty"`
+	StartTimeConfirmed bool      `xml:"start_time_confirmed,attr,omitempty" json:"startTimeConfirmed,omitempty" bson:"startTimeConfirmed,omitempty"`
+	StartTimeTbd       bool      `xml:"start_time_tbd,attr,omitempty" json:"startTimeTbd,omitempty" bson:"startTimeTbd,omitempty"`
+	NextLiveTime       time.Time `xml:"next_live_time,attr,omitempty" json:"nextLiveTime,omitempty" bson:"nextLiveTime,omitempty"`
+	Liveodds           string    `xml:"liveodds,attr,omitempty" json:"liveodds,omitempty" bson:"liveodds,omitempty"`
+	Status             string    `xml:"status,attr,omitempty" json:"status,omitempty" bson:"status,omitempty"`
+	Name               string    `xml:"name,attr,omitempty" json:"name,omitempty" bson:"name,omitempty"`
+	Type               string    `xml:"type,attr,omitempty" json:"type,omitempty" bson:"type,omitempty"`
+	Scheduled          time.Time `xml:"scheduled,attr,omitempty" json:"scheduled,omitempty" bson:"scheduled,omitempty"`
+	ScheduledEnd       time.Time `xml:"scheduled_end,attr,omitempty" json:"scheduledEnd,omitempty" bson:"scheduledEnd,omitempty"`
+	ReplacedBy         string    `xml:"replaced_by,attr,omitempty" json:"replacedBy,omitempty" bson:"replacedBy,omitempty"`
 
-	Sport      Sport      `xml:"sport" json:"sport"`
-	Category   Category   `xml:"category" json:"category"`
-	Tournament Tournament `xml:"tournament,omitempty" json:"tournament,omitempty"`
+	Sport      Sport      `xml:"sport" json:"sport" bson:"sport,omitempty"`
+	Category   Category   `xml:"category" json:"category" bson:"category,omitempty"`
+	Tournament Tournament `xml:"tournament,omitempty" json:"tournament,omitempty" bson:"tournament,omitempty"`
 
-	Round  Round  `xml:"tournament_round,omitempty" json:"round,omitempty"`
-	Season Season `xml:"season,omitempty" json:"season,omitempty"`
-	Venue  Venue  `xml:"venue,omitempty" json:"venue,omitempty"`
+	Round  Round  `xml:"tournament_round,omitempty" json:"round,omitempty" bson:"round,omitempty"`
+	Season Season `xml:"season,omitempty" json:"season,omitempty" bson:"season,omitempty"`
+	Venue  Venue  `xml:"venue,omitempty" json:"venue,omitempty" bson:"venue,omitempty"`
 
-	ProductInfo ProductInfo  `xml:"product_info,omitempty" json:"productInfo,omitempty"`
-	Competitors []Competitor `xml:"competitors>competitor,omitempty" json:"competitors,omitempty"`
-	TvChannels  []TvChannel  `xml:"tv_channels>tv_channel,omitempty" json:"tvChannels,omitempty"`
+	ProductInfo ProductInfo  `xml:"product_info,omitempty" json:"productInfo,omitempty" bson:"productInfo,omitempty"`
+	Competitors []Competitor `xml:"competitors>competitor,omitempty" json:"competitors,omitempty" bson:"competitors,omitempty"`
+	TvChannels  []TvChannel  `xml:"tv_channels>tv_channel,omitempty" json:"tvChannels,omitempty" bson:"tvChannels,omitempty"`
 
-	Home Competitor `json:"home"`
-	Away Competitor `json:"away"`
+	Home Competitor `json:"home" bson:"home,omitempty"`
+	Away Competitor `json:"away" bson:"away,omitempty"`
 
-	ExtraInfo []ExtraInfo  `xml:"extra_info>info,omitempty" json:"extraInfo,omitempty"`
-	Races     []SportEvent `xml:"races>sport_event,omitempty" json:"races,omitempty"`
+	ExtraInfo []ExtraInfo  `xml:"extra_info>info,omitempty" json:"extraInfo,omitempty" bson:"extraInfo,omitempty"`
+	Races     []SportEvent `xml:"races>sport_event,omitempty" json:"races,omitempty" bson:"races,omitempty"`
 	// this also exists but we are skiping for the time being
-	//ReferenceIDs         ReferenceIDs         `xml:"reference_ids,omitempty" json:"referenceIDs,omitempty"`
+	//ReferenceIDs         ReferenceIDs         `xml:"reference_ids,omitempty" json:"referenceId`s,omitempty"`
 	//SportEventConditions SportEventConditions `xml:"sport_event_conditions,omitempty" json:"sportEventConditions,omitempty"`
 	//DelayedInfo DelayedInfo `xml:"delayed_info,omitempty" json:"delayedInfo,omitempty"`
 	//CoverageInfo CoverageInfo `xml:"coverage_info,omitempty" json:"coverageInfo,omitempty"`
@@ -55,103 +55,103 @@ type Fixture struct {
 }
 
 type FixtureTournament struct {
-	ID         int        `xml:"-" json:"id"`
-	URN        URN        `xml:"id,attr,omitempty" json:"urn"`
-	Name       string     `xml:"name,attr,omitempty" json:"name,omitempty"`
-	Sport      Sport      `xml:"sport" json:"sport"`
-	Category   Category   `xml:"category" json:"category"`
-	Tournament Tournament `xml:"tournament,omitempty" json:"tournament,omitempty"`
-	Season     Season     `xml:"season,omitempty" json:"season,omitempty"`
-	Groups     []Group    `xml:"groups>group,omitempty" json:"groups,omitempty"`
+	ID         int        `xml:"-" json:"id" bson:"id,omitempty"`
+	URN        URN        `xml:"id,attr,omitempty" json:"urn" bson:"urn,omitempty"`
+	Name       string     `xml:"name,attr,omitempty" json:"name,omitempty" bson:"name,omitempty"`
+	Sport      Sport      `xml:"sport" json:"sport" bson:"sport,omitempty"`
+	Category   Category   `xml:"category" json:"category" bson:"category,omitempty"`
+	Tournament Tournament `xml:"tournament,omitempty" json:"tournament,omitempty" bson:"tournament,omitempty"`
+	Season     Season     `xml:"season,omitempty" json:"season,omitempty" bson:"season,omitempty"`
+	Groups     []Group    `xml:"groups>group,omitempty" json:"groups,omitempty" bson:"groups,omitempty"`
 }
 
 type Group struct {
-	Name        string       `xml:"name,attr,omitempty" json:"name"`
-	Competitors []Competitor `xml:"competitor,omitempty" json:"competitors,omitempty"`
+	Name        string       `xml:"name,attr,omitempty" json:"name" bson:"name,omitempty"`
+	Competitors []Competitor `xml:"competitor,omitempty" json:"competitors,omitempty" bson:"competitors,omitempty"`
 }
 
 type Tournament struct {
-	ID   int    `json:"id"`
-	Name string `xml:"name,attr" json:"name"`
+	ID   int    `json:"id" bson:"id,omitempty"`
+	Name string `xml:"name,attr" json:"name" bson:"name,omitempty"`
 }
 
 type Sport struct {
-	ID   int    `json:"id"`
-	Name string `xml:"name,attr" json:"name"`
+	ID   int    `json:"id" bson:"id,omitempty"`
+	Name string `xml:"name,attr" json:"name" bson:"name,omitempty"`
 }
 
 type Category struct {
-	ID          int    `json:"id"`
-	Name        string `xml:"name,attr" json:"name"`
-	CountryCode string `xml:"country_code,attr,omitempty" json:"countryCode,omitempty"`
+	ID          int    `json:"id" bson:"id,omitempty"`
+	Name        string `xml:"name,attr" json:"name" bson:"name,omitempty"`
+	CountryCode string `xml:"country_code,attr,omitempty" json:"countryCode,omitempty" bson:"countryCode,omitempty"`
 }
 
 type Competitor struct {
-	ID           int                `json:"id"`
-	Qualifier    string             `xml:"qualifier,attr,omitempty" json:"qualifier,omitempty"`
-	Name         string             `xml:"name,attr" json:"name"`
-	Abbreviation string             `xml:"abbreviation,attr" json:"abbreviation"`
-	Country      string             `xml:"country,attr,omitempty" json:"country,omitempty"`
-	CountryCode  string             `xml:"country_code,attr,omitempty" json:"countryCode,omitempty"`
-	Virtual      bool               `xml:"virtual,attr,omitempty" json:"virtual,omitempty"`
-	Players      []CompetitorPlayer `xml:"players>player,omitempty" json:"players,omitempty"`
-	//ReferenceIDs CompetitorReferenceIDs `xml:"reference_ids,omitempty" json:"referenceIDs,omitempty"`
+	ID           int                `json:"id" bson:"id,omitempty"`
+	Qualifier    string             `xml:"qualifier,attr,omitempty" json:"qualifier,omitempty" bson:"qualifier,omitempty"`
+	Name         string             `xml:"name,attr" json:"name" bson:"name,omitempty"`
+	Abbreviation string             `xml:"abbreviation,attr" json:"abbreviation" bson:"abbreviation,omitempty"`
+	Country      string             `xml:"country,attr,omitempty" json:"country,omitempty" bson:"country,omitempty"`
+	CountryCode  string             `xml:"country_code,attr,omitempty" json:"countryCode,omitempty" bson:"countryCode,omitempty"`
+	Virtual      bool               `xml:"virtual,attr,omitempty" json:"virtual,omitempty" bson:"virtual,omitempty"`
+	Players      []CompetitorPlayer `xml:"players>player,omitempty" json:"players,omitempty" bson:"players,omitempty"`
+	//ReferenceIDs CompetitorReferenceIDs `xml:"reference_ids,omitempty" json:"referenceIds,omitempty"`
 }
 
 type CompetitorPlayer struct {
-	ID           int    `json:"id"`
-	Name         string `xml:"name,attr" json:"name"`
-	Abbreviation string `xml:"abbreviation,attr" json:"abbreviation"`
-	Nationality  string `xml:"nationality,attr,omitempty" json:"nationality,omitempty"`
+	ID           int    `json:"id" bson:"id,omitempty"`
+	Name         string `xml:"name,attr" json:"name" bson:"name,omitempty"`
+	Abbreviation string `xml:"abbreviation,attr" json:"abbreviation" bson:"abbreviation,omitempty"`
+	Nationality  string `xml:"nationality,attr,omitempty" json:"nationality,omitempty" bson:"nationality,omitempty"`
 }
 
 type Venue struct {
-	ID             int    `json:"id"`
-	Name           string `xml:"name,attr" json:"name"`
-	Capacity       int    `xml:"capacity,attr,omitempty" json:"capacity,omitempty"`
-	CityName       string `xml:"city_name,attr,omitempty" json:"cityName,omitempty"`
-	CountryName    string `xml:"country_name,attr,omitempty" json:"countryName,omitempty"`
-	CountryCode    string `xml:"country_code,attr,omitempty" json:"countryCode,omitempty"`
-	MapCoordinates string `xml:"map_coordinates,attr,omitempty" json:"mapCoordinates,omitempty"`
+	ID             int    `json:"id" bson:"id,omitempty"`
+	Name           string `xml:"name,attr" json:"name" bson:"name,omitempty"`
+	Capacity       int    `xml:"capacity,attr,omitempty" json:"capacity,omitempty" bson:"capacity,omitempty"`
+	CityName       string `xml:"city_name,attr,omitempty" json:"cityName,omitempty" bson:"cityName,omitempty"`
+	CountryName    string `xml:"country_name,attr,omitempty" json:"countryName,omitempty" bson:"countryName,omitempty"`
+	CountryCode    string `xml:"country_code,attr,omitempty" json:"countryCode,omitempty" bson:"countryCode,omitempty"`
+	MapCoordinates string `xml:"map_coordinates,attr,omitempty" json:"mapCoordinates,omitempty" bson:"mapCoordinates,omitempty"`
 }
 
 type TvChannel struct {
-	Name string `xml:"name,attr" json:"name"`
+	Name string `xml:"name,attr" json:"name" bson:"name,omitempty"`
 	// seams to be always zero
 	// StartTime time.Time `xml:"start_time,attr,omitempty" json:"startTime,omitempty"`
 }
 
 type StreamingChannel struct {
-	ID   int    `xml:"id,attr" json:"id"`
-	Name string `xml:"name,attr" json:"name"`
+	ID   int    `xml:"id,attr" json:"id" bson:"id,omitempty"`
+	Name string `xml:"name,attr" json:"name" bson:"name,omitempty"`
 }
 type ProductInfoLink struct {
-	Name string `xml:"name,attr" json:"name"`
-	Ref  string `xml:"ref,attr" json:"ref"`
+	Name string `xml:"name,attr" json:"name" bson:"name,omitempty"`
+	Ref  string `xml:"ref,attr" json:"ref" bson:"ref,omitempty"`
 }
 
 type Round struct {
-	ID                  int    `xml:"betradar_id,attr,omitempty" json:"id,omitempty"`
-	Type                string `xml:"type,attr,omitempty" json:"type,omitempty"`
-	Number              int    `xml:"number,attr,omitempty" json:"number,omitempty"`
-	Name                string `xml:"name,attr,omitempty" json:"name,omitempty"`
-	GroupLongName       string `xml:"group_long_name,attr,omitempty" json:"groupLongName,omitempty"`
-	Group               string `xml:"group,attr,omitempty" json:"group,omitempty"`
-	GroupID             string `xml:"group_id,attr,omitempty" json:"groupID,omitempty"`
-	CupRoundMatches     int    `xml:"cup_round_matches,attr,omitempty" json:"cupRoundMatches,omitempty"`
-	CupRoundMatchNumber int    `xml:"cup_round_match_number,attr,omitempty" json:"cupRoundMatchNumber,omitempty"`
-	OtherMatchID        string `xml:"other_match_id,attr,omitempty" json:"otherMatchID,omitempty"`
+	ID                  int    `xml:"betradar_id,attr,omitempty" json:"id,omitempty" bson:"id,omitempty"`
+	Type                string `xml:"type,attr,omitempty" json:"type,omitempty" bson:"type,omitempty"`
+	Number              int    `xml:"number,attr,omitempty" json:"number,omitempty" bson:"number,omitempty"`
+	Name                string `xml:"name,attr,omitempty" json:"name,omitempty" bson:"name,omitempty"`
+	GroupLongName       string `xml:"group_long_name,attr,omitempty" json:"groupLongName,omitempty" bson:"groupLongName,omitempty"`
+	Group               string `xml:"group,attr,omitempty" json:"group,omitempty" bson:"group,omitempty"`
+	GroupID             string `xml:"group_id,attr,omitempty" json:"groupId,omitempty" bson:"groupId,omitempty"`
+	CupRoundMatches     int    `xml:"cup_round_matches,attr,omitempty" json:"cupRoundMatches,omitempty" bson:"cupRoundMatches,omitempty"`
+	CupRoundMatchNumber int    `xml:"cup_round_match_number,attr,omitempty" json:"cupRoundMatchNumber,omitempty" bson:"cupRoundMatchNumber,omitempty"`
+	OtherMatchID        string `xml:"other_match_id,attr,omitempty" json:"otherMatchId,omitempty" bson:"otherMatchId,omitempty"`
 }
 
 type Season struct {
-	ID        int    `json:"id"`
-	StartDate string `xml:"start_date,attr" json:"startDate"`
-	EndDate   string `xml:"end_date,attr" json:"endDate"`
-	StartTime string `xml:"start_time,attr,omitempty" json:"startTime,omitempty"`
-	EndTime   string `xml:"end_time,attr,omitempty" json:"endTime,omitempty"`
-	Year      string `xml:"year,attr,omitempty" json:"year,omitempty"`
-	Name      string `xml:"name,attr" json:"name"`
-	//TournamentID string    `xml:"tournament_id,attr,omitempty" json:"tournamentID,omitempty"`
+	ID        int    `json:"id" bson:"id,omitempty"`
+	StartDate string `xml:"start_date,attr" json:"startDate" bson:"startDate,omitempty"`
+	EndDate   string `xml:"end_date,attr" json:"endDate" bson:"endDate,omitempty"`
+	StartTime string `xml:"start_time,attr,omitempty" json:"startTime,omitempty" bson:"startTime,omitempty"`
+	EndTime   string `xml:"end_time,attr,omitempty" json:"endTime,omitempty" bson:"endTime,omitempty"`
+	Year      string `xml:"year,attr,omitempty" json:"year,omitempty" bson:"year,omitempty"`
+	Name      string `xml:"name,attr" json:"name" bson:"name,omitempty"`
+	//TournamentID string    `xml:"tournament_id,attr,omitempty" json:"tournamentId,omitempty"`
 }
 
 // type ParentStage struct {
@@ -171,29 +171,29 @@ type Season struct {
 // }
 
 type ProductInfo struct {
-	Streaming            []StreamingChannel `xml:"streaming>channel,omitempty" json:"streaming,omitempty"`
-	IsInLiveScore        string             `xml:"is_in_live_score,omitempty" json:"isInLiveScore,omitempty"`
-	IsInHostedStatistics string             `xml:"is_in_hosted_statistics,omitempty" json:"isInHostedStatistics,omitempty"`
-	IsInLiveCenterSoccer string             `xml:"is_in_live_center_soccer,omitempty" json:"isInLiveCenterSoccer,omitempty"`
-	IsAutoTraded         string             `xml:"is_auto_traded,omitempty" json:"isAutoTraded,omitempty"`
-	Links                []ProductInfoLink  `xml:"links>link,omitempty" json:"links,omitempty"`
+	Streaming            []StreamingChannel `xml:"streaming>channel,omitempty" json:"streaming,omitempty" bson:"streaming,omitempty"`
+	IsInLiveScore        string             `xml:"is_in_live_score,omitempty" json:"isInLiveScore,omitempty" bson:"isInLiveScore,omitempty"`
+	IsInHostedStatistics string             `xml:"is_in_hosted_statistics,omitempty" json:"isInHostedStatistics,omitempty" bson:"isInHostedStatistics,omitempty"`
+	IsInLiveCenterSoccer string             `xml:"is_in_live_center_soccer,omitempty" json:"isInLiveCenterSoccer,omitempty" bson:"isInLiveCenterSoccer,omitempty"`
+	IsAutoTraded         string             `xml:"is_auto_traded,omitempty" json:"isAutoTraded,omitempty" bson:"isAutoTraded,omitempty"`
+	Links                []ProductInfoLink  `xml:"links>link,omitempty" json:"links,omitempty" bson:"links,omitempty"`
 }
 
 // ExtraInfo covers additional fixture information about the match,
 // such as coverage information, extended markets offer, additional rules etc.
 type ExtraInfo struct {
-	Key   string `xml:"key,attr,omitempty" json:"key,omitempty"`
-	Value string `xml:"value,attr,omitempty" json:"value,omitempty"`
+	Key   string `xml:"key,attr,omitempty" json:"key,omitempty" bson:"key,omitempty"`
+	Value string `xml:"value,attr,omitempty" json:"value,omitempty" bson:"value,omitempty"`
 }
 
 // SportEvent covers information about scheduled races in a stage
 // For VHC and VDR information is in vdr/vhc:stage:<int> fixture with type="parent"
 type SportEvent struct {
-	ID           string    `xml:"id,attr,omitempty" json:"id,omitempty"`
-	Name         string    `xml:"name,attr,omitempty" json:"name,omitempty"`
-	Type         string    `xml:"type,attr,omitempty" json:"type,omitempty"`
-	Scheduled    time.Time `xml:"scheduled,attr,omitempty" json:"scheduled,omitempty"`
-	ScheduledEnd time.Time `xml:"scheduled_end,attr,omitempty" json:"scheduled_end,omitempty"`
+	ID           string    `xml:"id,attr,omitempty" json:"id,omitempty" bson:"id,omitempty"`
+	Name         string    `xml:"name,attr,omitempty" json:"name,omitempty" bson:"name,omitempty"`
+	Type         string    `xml:"type,attr,omitempty" json:"type,omitempty" bson:"type,omitempty"`
+	Scheduled    time.Time `xml:"scheduled,attr,omitempty" json:"scheduled,omitempty" bson:"scheduled,omitempty"`
+	ScheduledEnd time.Time `xml:"scheduled_end,attr,omitempty" json:"scheduled_end,omitempty" bson:"scheduledEnd,omitempty"`
 }
 
 func (f *Fixture) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {

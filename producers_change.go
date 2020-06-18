@@ -3,10 +3,10 @@ package uof
 type ProducersChange []ProducerChange
 
 type ProducerChange struct {
-	Producer   Producer       `json:"producer,omitempty"`
-	Status     ProducerStatus `json:"status,omitempty"`
-	RecoveryID int            `json:"recoveryID,omitempty"`
-	Timestamp  int            `json:"timestamp,omitempty"`
+	Producer   Producer       `json:"producer,omitempty" bson:"producer,omitempty"`
+	Status     ProducerStatus `json:"status,omitempty" bson:"status,omitempty"`
+	RecoveryID int            `json:"recoveryId,omitempty" bson:"recoveryId,omitempty"`
+	Timestamp  int            `json:"timestamp,omitempty" bson:"timestamp,omitempty"`
 }
 
 func (p *ProducersChange) Add(producer Producer, timestamp int) {
