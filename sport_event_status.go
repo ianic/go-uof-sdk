@@ -1,5 +1,7 @@
 package uof
 
+import "encoding/xml"
+
 // The element "sport_event_status" is provided in the odds_change message.
 // Status is the only required attribute for this element, and this attribute
 // describes the current status of the sport-event itself (not started, live,
@@ -13,9 +15,9 @@ type SportEventStatus struct {
 	// Does Betradar have a scout watching the game.
 	Reporting *EventReporting `xml:"reporting,attr,omitempty" json:"reporting,omitempty" bson:"reporting,omitempty"`
 	// Current score for the home team.
-	HomeScore *int `xml:"home_score,attr,omitempty" json:"homeScore,omitempty" bson:"homeScore,omitempty"`
+	HomeScore *int `xml:"-" json:"homeScore,omitempty" bson:"homeScore,omitempty"`
 	// Current score for the away team.
-	AwayScore *int `xml:"away_score,attr,omitempty" json:"awayScore,omitempty" bson:"awayScore,omitempty"`
+	AwayScore *int `xml:"-" json:"awayScore,omitempty" bson:"awayScore,omitempty"`
 	// Sports-specific integer code the represents the live match status (first period, 2nd break, etc.).
 	MatchStatus *int `xml:"match_status,attr" json:"matchStatus" bson:"matchStatus,omitempty"`
 	// The player who has the serve at that moment.
@@ -67,6 +69,28 @@ type SportEventStatus struct {
 	PeriodScores []PeriodScore `xml:"period_scores>period_score,omitempty" json:"periodScores,omitempty" bson:"periodScores,omitempty"`
 	Results      []Result      `xml:"results>result,omitempty" json:"results,omitempty" bson:"results,omitempty"`
 	Statistics   *Statistics   `xml:"statistics,omitempty" json:"statistics,omitempty" bson:"statistics,omitempty"`
+}
+
+func (o *SportEventStatus) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	type T SportEventStatus
+	var overlay struct {
+		*T
+		HomeScoreF *float64 `xml:"home_score,attr,omitempty"`
+		AwayScoreF *float64 `xml:"away_score,attr,omitempty"`
+	}
+	overlay.T = (*T)(o)
+	if err := d.DecodeElement(&overlay, &start); err != nil {
+		return err
+	}
+	if overlay.HomeScore != nil {
+		v := int(*overlay.HomeScore)
+		o.HomeScore = &v
+	}
+	if overlay.AwayScore != nil {
+		v := int(*overlay.AwayScore)
+		o.AwayScore = &v
+	}
+	return nil
 }
 
 // The sport_event_status may contain a clock element. This clock element
