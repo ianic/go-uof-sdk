@@ -1,6 +1,7 @@
 package uof
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -271,7 +272,7 @@ func TestUnpackFail(t *testing.T) {
 
 	_, err := NewQueueMessage("hi.pre.-.bet_cancel.1.sr:match.1234.-", buf)
 	assert.Error(t, err)
-	assert.Equal(t, `NOTICE uof error op: message.unpack, inner: strconv.ParseInt: parsing "int": invalid syntax`, err.Error())
+	assert.True(t, strings.HasPrefix(err.Error(), `NOTICE uof error op: message.unpack, inner: strconv.ParseInt: parsing "int": invalid syntax`))
 
 	// height should be int
 	buf = []byte(`
@@ -281,7 +282,7 @@ func TestUnpackFail(t *testing.T) {
 	`)
 	_, err = NewAPIMessage(LangEN, MessageTypePlayer, buf)
 	assert.Error(t, err)
-	assert.Equal(t, `NOTICE uof error op: message.unpack, inner: strconv.ParseInt: parsing "int": invalid syntax`, err.Error())
+	assert.True(t, strings.HasPrefix(err.Error(), `NOTICE uof error op: message.unpack, inner: strconv.ParseInt: parsing "int": invalid syntax`))
 
 	var m Message
 	err = m.Unmarshal(nil)
@@ -300,50 +301,30 @@ func TestEnrichHeaderAfterUnpack(t *testing.T) {
 	buf := []struct {
 		key string
 		raw []byte
-	}{
+	}{{
 		// snapshot_complete
-		struct {
-			key string
-			raw []byte
-		}{
-			key: "-.-.-.snapshot_complete.-.-.-",
-			raw: []byte(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+		key: "-.-.-.snapshot_complete.-.-.-",
+		raw: []byte(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 			<snapshot_complete request_id="1234" timestamp="1234578910111" product="1"/>`),
-		},
+	}, {
 		// alive
-		struct {
-			key string
-			raw []byte
-		}{
-			key: "-.-.-.alive.-.-.-.-",
-			raw: []byte(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+		key: "-.-.-.alive.-.-.-.-",
+		raw: []byte(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 			<alive product="1" timestamp="1234578910111" subscribed="1"/>`),
-		},
+	}, {
 		// fixture_change
-		struct {
-			key string
-			raw []byte
-		}{
-			key: "hi.pre.live.fixture_change.1.sr:match.18001015.-",
-			raw: []byte(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+		key: "hi.pre.live.fixture_change.1.sr:match.18001015.-",
+		raw: []byte(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 			<fixture_change start_time="1557255600000" product="1" event_id="sr:match:18001015" timestamp="1234578910111"/>`),
-		},
+	}, {
 		// bet_stop
-		struct {
-			key string
-			raw []byte
-		}{
-			key: "hi.-.live.bet_stop.1.sr:match.18001015.-",
-			raw: []byte(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+		key: "hi.-.live.bet_stop.1.sr:match.18001015.-",
+		raw: []byte(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 			<bet_stop groups="all" market_status="0" product="1" event_id="sr:match:18001015" timestamp="1234578910111"/>`),
-		},
+	}, {
 		// odds_change
-		struct {
-			key string
-			raw []byte
-		}{
-			key: "hi.-.live.odds_change.1.sr:match.18001015.-",
-			raw: []byte(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+		key: "hi.-.live.odds_change.1.sr:match.18001015.-",
+		raw: []byte(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 		<odds_change product="1" event_id="sr:match:18001015" timestamp="1234578910111">
 			<sport_event_status status="0" match_status="0"/>
 			<odds>
@@ -354,14 +335,10 @@ func TestEnrichHeaderAfterUnpack(t *testing.T) {
 				</market>
 			</odds>
 		</odds_change>`),
-		},
+	}, {
 		// bet_settlement
-		struct {
-			key string
-			raw []byte
-		}{
-			key: "hi.-.live.bet_settlement.1.sr:match.18001015.-",
-			raw: []byte(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+		key: "hi.-.live.bet_settlement.1.sr:match.18001015.-",
+		raw: []byte(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 		<bet_settlement certainty="1" product="1" event_id="sr:match:13369905" timestamp="1234578910111">
 			<outcomes>
 				<market id="6">
@@ -370,40 +347,28 @@ func TestEnrichHeaderAfterUnpack(t *testing.T) {
 				</market>
 			</outcomes>
 		</bet_settlement>`),
-		},
+	}, {
 		// rollback_bet_settlement
-		struct {
-			key string
-			raw []byte
-		}{
-			key: "hi.-.live.rollback_bet_settlement.1.sr:match.18001015.-",
-			raw: []byte(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+		key: "hi.-.live.rollback_bet_settlement.1.sr:match.18001015.-",
+		raw: []byte(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 			<rollback_bet_settlement product="1" event_id="sr:match:18001015" timestamp="1234578910111">
 				<market id="38" specifiers="goalnr=1|type=live"/>
 			</rollback_bet_settlement>`),
-		},
+	}, {
 		// bet_cancel
-		struct {
-			key string
-			raw []byte
-		}{
-			key: "hi.-.live.bet_cancel.1.sr:match.18001015.-",
-			raw: []byte(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+		key: "hi.-.live.bet_cancel.1.sr:match.18001015.-",
+		raw: []byte(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 		<bet_cancel end_time="1564598513000" event_id="sr:match:18001015" product="1" start_time="1564597838000" timestamp="1234578910111">
 			<market name="1st half - 1st goal" id="62" specifier="goalnr=1" void_reason="12"/>
 		</bet_cancel>`),
-		},
+	}, {
 		// rollback_bet_cancel
-		struct {
-			key string
-			raw []byte
-		}{
-			key: "hi.-.live.rollback_bet_cancel.1.sr:match.18001015.-",
-			raw: []byte(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+		key: "hi.-.live.rollback_bet_cancel.1.sr:match.18001015.-",
+		raw: []byte(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 			<rollback_bet_cancel event_id="sr:match:4444" product="1" timestamp="1234578910111">
 				<market id="48" specifiers="score=41.5"/>
 			</rollback_bet_cancel>`),
-		},
+	},
 	}
 
 	for _, m := range buf {

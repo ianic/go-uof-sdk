@@ -82,12 +82,12 @@ func (o *SportEventStatus) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 	if err := d.DecodeElement(&overlay, &start); err != nil {
 		return err
 	}
-	if overlay.HomeScore != nil {
-		v := int(*overlay.HomeScore)
+	if overlay.HomeScoreF != nil {
+		v := int(*overlay.HomeScoreF)
 		o.HomeScore = &v
 	}
-	if overlay.AwayScore != nil {
-		v := int(*overlay.AwayScore)
+	if overlay.AwayScoreF != nil {
+		v := int(*overlay.AwayScoreF)
 		o.AwayScore = &v
 	}
 	return nil
