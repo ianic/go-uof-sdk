@@ -12,7 +12,7 @@ import (
 )
 
 type Header struct {
-	Type        MessageType     `json:"type,omitempty" bson:"type,omitempty"`
+	Type        MessageType     `json:"type,omitempty" bson:"type"`
 	Scope       MessageScope    `json:"scope,omitempty" bson:"scope,omitempty"`
 	Priority    MessagePriority `json:"priority,omitempty" bson:"priority,omitempty"`
 	Lang        Lang            `json:"lang,omitempty" bson:"lang,omitempty"`
