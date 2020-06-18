@@ -12,7 +12,7 @@ type BetSettlement struct {
 	// results live (1) or is this bet-settlement sent post-match when the
 	// official results have been confirmed (2)
 	Certainty *int8                 `xml:"certainty,attr" json:"certainty"` // May be one of 1, 2
-	Markets   []BetSettlementMarket `xml:"outcomes>market" json:"outcomes"`
+	Markets   []BetSettlementMarket `xml:"outcomes>market" json:"markets"`
 }
 
 type BetSettlementMarket struct {
@@ -25,7 +25,7 @@ type BetSettlementMarket struct {
 	// https://iodocs.betradar.com/unifiedfeed#Betting-descriptions-GET-Void-reasons.
 	VoidReason *int                   `xml:"void_reason,attr,omitempty" json:"voidReason,omitempty"`
 	Result     *string                `xml:"result,attr,omitempty" json:"result,omitempty"`
-	Outcomes   []BetSettlementOutcome `xml:"outcome" json:"outcome"`
+	Outcomes   []BetSettlementOutcome `xml:"outcome" json:"outcomes"`
 }
 
 type BetSettlementOutcome struct {
@@ -41,7 +41,7 @@ type RollbackBetSettlement struct {
 	Producer  Producer          `xml:"product,attr" json:"producer"`
 	Timestamp int               `xml:"timestamp,attr" json:"timestamp"`
 	RequestID *int              `xml:"request_id,attr,omitempty" json:"requestID,omitempty"`
-	Markets   []BetCancelMarket `xml:"market" json:"market"`
+	Markets   []BetCancelMarket `xml:"market" json:"markets"`
 }
 
 func (t *BetSettlement) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {

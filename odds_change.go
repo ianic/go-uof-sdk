@@ -19,7 +19,7 @@ type OddsChange struct {
 	// there should only be one product generating odds for a particular event.
 	Producer  Producer `xml:"product,attr" json:"producer,omitempty"`
 	Timestamp int      `xml:"timestamp,attr" json:"timestamp"`
-	Markets   []Market `json:"market,omitempty"`
+	Markets   []Market `json:"markets,omitempty"`
 	// values in range 0-6   /v1/descriptions/betting_status.xml
 	BettingStatus *int `json:"bettingStatus,omitempty"`
 	// values in range 0-87  /v1/descriptions/betstop_reasons.xml
@@ -60,7 +60,7 @@ type Market struct {
 	// or recommended market line. This setting makes most sense for markets where
 	// multiple lines are provided (e.g. the Totals market).
 	Favourite *bool     `xml:"favourite,attr,omitempty" json:"favourite,omitempty"`
-	Outcomes  []Outcome `xml:"outcome,omitempty" json:"outcome,omitempty"`
+	Outcomes  []Outcome `xml:"outcome,omitempty" json:"outcomes,omitempty"`
 	// Timestamp in UTC when to betstop this market. Typically used for outrights
 	// and typically is the start-time of the event the market refers to.
 	NextBetstop *int `json:"nextBetstop,omitempty"`
