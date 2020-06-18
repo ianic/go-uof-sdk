@@ -212,7 +212,7 @@ func (m *Message) unpack() error {
 		return Notice("message.unpack", err)
 	}
 	if err != nil {
-		return Notice("message.unpack", err)
+		return Notice("message.unpack", fmt.Errorf("%w xml: %s", err, m.Raw))
 	}
 	return nil
 }
