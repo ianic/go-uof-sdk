@@ -135,6 +135,7 @@ func pp(o interface{}) {
 }
 
 func TestListLive(t *testing.T) {
+	t.Skip("interactive test")
 	token, ok := os.LookupEnv(EnvToken)
 	if !ok {
 		t.Skip("integration token not found")
@@ -142,7 +143,9 @@ func TestListLive(t *testing.T) {
 
 	a, err := Staging(context.TODO(), token)
 	require.NoError(t, err)
-	booked, err := a.BookAllLiveMatches()
+
+	done := make(map[string]bool)
+	booked, _, err := a.BookAllLiveMatches(done)
 	require.NoError(t, err)
 	fmt.Println("booked matches", booked)
 }
