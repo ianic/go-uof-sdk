@@ -13,17 +13,18 @@ import (
 var defaultLanuages = uof.Languages("en,de")
 
 type Config struct {
-	BookmakerID  string
-	Token        string
-	Fixtures     time.Time
-	Recovery     []uof.ProducerChange
-	Stages       []pipe.InnerStage
-	Replay       func(*api.ReplayAPI) error
-	Env          uof.Environment
-	Staging      bool
-	BindVirtuals bool
-	BindSports   bool
-	Languages    []uof.Lang
+	BookmakerID   string
+	Token         string
+	Fixtures      time.Time
+	Recovery      []uof.ProducerChange
+	Stages        []pipe.InnerStage
+	Replay        func(*api.ReplayAPI) error
+	Env           uof.Environment
+	Staging       bool
+	BindVirtuals  bool
+	BindSports    bool
+	Languages     []uof.Lang
+	BookLiveEvery time.Duration
 }
 
 // Option sets attributes on the Config.
@@ -57,6 +58,9 @@ func Run(ctx context.Context, options ...Option) (<-chan error, error) {
 			return nil, err
 		}
 	}
+	if c.BookLiveEvery > 0 {
+		go bookLiveLoop(ctx, apiConn, c.BookLiveEvery)
+	}
 
 	stages := []pipe.InnerStage{
 		pipe.Markets(apiConn, c.Languages),
@@ -75,6 +79,21 @@ func Run(ctx context.Context, options ...Option) (<-chan error, error) {
 		stages...,
 	)
 	return errc, nil
+}
+
+func bookLiveLoop(ctx context.Context, api *api.API, every time.Duration) {
+	done := make(map[string]bool)
+	for {
+		//var err error
+		//var booked int
+		_, done, _ = api.BookAllLiveMatches(done)
+		// TODO some kind of notification about number of booked matches
+		select {
+		case <-ctx.Done():
+			return
+		case <-time.After(every):
+		}
+	}
 }
 
 func firstErr(errc <-chan error) error {
@@ -222,5 +241,11 @@ func Recovery(pc []uof.ProducerChange) Option {
 func Fixtures(to time.Time) Option {
 	return func(c *Config) {
 		c.Fixtures = to
+	}
+}
+
+func BookLiveMatches(every time.Duration) Option {
+	return func(c *Config) {
+		c.BookLiveEvery = every
 	}
 }

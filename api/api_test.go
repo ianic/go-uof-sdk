@@ -10,6 +10,7 @@ import (
 
 	"github.com/minus5/go-uof-sdk"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestTemplate(t *testing.T) {
@@ -131,4 +132,17 @@ func pp(o interface{}) {
 		panic(err)
 	}
 	fmt.Printf("%s\n", buf)
+}
+
+func TestListLive(t *testing.T) {
+	token, ok := os.LookupEnv(EnvToken)
+	if !ok {
+		t.Skip("integration token not found")
+	}
+
+	a, err := Staging(context.TODO(), token)
+	require.NoError(t, err)
+	booked, err := a.BookAllLiveMatches()
+	require.NoError(t, err)
+	fmt.Println("booked matches", booked)
 }

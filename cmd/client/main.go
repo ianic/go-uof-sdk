@@ -63,9 +63,10 @@ func exitSignal() context.Context {
 func main() {
 	go debugHTTP()
 
-	preloadTo := time.Now().Add(24 * time.Hour)
+	preloadTo := time.Now().Add(24 * time.Hour * 30) // mjesec dana
 
-	timestamp := uof.CurrentTimestamp() - 5*60*1000 // -5 minutes
+	//timestamp := uof.CurrentTimestamp() - 5*60*1000 // -5 minutes
+	timestamp := uof.CurrentTimestamp() - 57*60*60*1000 // -47h minutes
 	var pc uof.ProducersChange
 	pc.Add(uof.ProducerPrematch, timestamp)
 	pc.Add(uof.ProducerLiveOdds, timestamp)
@@ -79,6 +80,7 @@ func main() {
 		sdk.Languages(uof.Languages("en,de,hr")),
 		sdk.BufferedConsumer(pipe.FileStore("./tmp"), 1024),
 		sdk.Consumer(logMessages),
+		sdk.BookLiveMatches(15*time.Minute),
 	)
 	if err != nil {
 		log.Fatal(err)

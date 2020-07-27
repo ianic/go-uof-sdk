@@ -2,6 +2,9 @@ package api
 
 import (
 	"encoding/xml"
+	"errors"
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/minus5/go-uof-sdk"
@@ -15,6 +18,8 @@ const (
 	pathCompetitor    = "/v1/sports/{{.Lang}}/competitors/sr:competitor:{{.PlayerID}}/profile.xml"
 	events            = "/v1/sports/{{.Lang}}/schedules/pre/schedule.xml?start={{.Start}}&limit={{.Limit}}"
 	liveEvents        = "/v1/sports/{{.Lang}}/schedules/live/schedule.xml"
+	pathTournaments   = "/v1/sports/{{.Lang}}/tournaments.xml"
+	pathBookLiveEvent = "/v1/liveodds/booking-calendar/events/{{.EventURN}}/book"
 )
 
 // Markets all currently available markets for a language
@@ -39,6 +44,13 @@ func (a *API) Tournament(lang uof.Lang, eventURN uof.URN) (*uof.FixtureTournamen
 	return &ft, a.getAs(&ft, pathFixture, &params{Lang: lang, EventURN: eventURN})
 }
 
+func (a *API) Tournaments(lang uof.Lang) ([]uof.FixtureTournament, error) {
+	var rsp tournamentsRsp
+	err := a.getAs(&rsp, pathTournaments, &params{Lang: lang})
+	fmt.Printf("%v", rsp.Tournaments)
+	return rsp.Tournaments, err
+}
+
 func (a *API) Player(lang uof.Lang, playerID int) (*uof.Player, error) {
 	var pr playerRsp
 	return &pr.Player, a.getAs(&pr, pathPlayer, &params{Lang: lang, PlayerID: playerID})
@@ -47,6 +59,10 @@ func (a *API) Player(lang uof.Lang, playerID int) (*uof.Player, error) {
 func (a *API) Competitor(lang uof.Lang, playerID int) (*uof.CompetitorPlayer, error) {
 	var cr competitorRsp
 	return &cr.Competitor, a.getAs(&cr, pathCompetitor, &params{Lang: lang, PlayerID: playerID})
+}
+
+type tournamentsRsp struct {
+	Tournaments []uof.FixtureTournament `xml:"tournaments>tournament" json:"tournaments,omitempty" bson:"tournaments,omitempty"`
 }
 
 type marketsRsp struct {
@@ -129,4 +145,49 @@ func (a *API) Fixtures(lang uof.Lang, to time.Time) (<-chan uof.Fixture, <-chan 
 	}()
 
 	return out, errc
+}
+
+func (a *API) BookAllLiveMatches(done map[string]bool) (int, map[string]bool, error) {
+	buf, err := a.get(liveEvents, &params{Lang: uof.LangEN})
+	if err != nil {
+		return 0, done, err
+	}
+	var sr scheduleRsp
+	if err := xml.Unmarshal(buf, &sr); err != nil {
+		return 0, done, err
+	}
+	booked := 0
+	for _, f := range sr.Fixtures {
+		if f.Status == "ended" {
+			continue
+		}
+		key := f.URN.String()
+		if _, ok := done[key]; ok {
+			continue
+
+		}
+		// fmt.Printf("%s %v %s  ", f.URN, f.Scheduled, f.Status)
+		if err := a.post(pathBookLiveEvent, &params{EventURN: f.URN}); err != nil {
+			var ae uof.APIError
+			if errors.As(err, &ae) {
+				if ur, e := ae.UOFRsp(); e == nil {
+					if ur.Code == "FORBIDDEN" {
+						return booked, done, err
+					}
+					// fmt.Printf("api error code %s, response %s\n", ur.Code, ur.Message)
+					if strings.Contains(ur.Message, "The match is booked") {
+						done[key] = true
+						booked++
+					}
+					done[key] = false
+					continue
+				}
+			}
+			return booked, done, err
+		}
+		// fmt.Printf("OK\n")
+		done[key] = true
+		booked++
+	}
+	return booked, done, nil
 }
