@@ -53,8 +53,8 @@ type Market struct {
 	ID            int               `xml:"id,attr" json:"id,omitempty" bson:"id,omitempty"`
 	LineID        int               `json:"lineId,omitempty" bson:"lineId,omitempty"`
 	VariantID     int               `json:"variantId,omitempty" bson:"variantId,omitempty"`
-	Specifiers    map[string]string `json:"sepcifiers,omitempty" bson:"specifiers,omitempty"`
-	Status        MarketStatus      `xml:"status,attr,omitempty" json:"status,omitempty" bson:"status,omitempty"`
+	Specifiers    map[string]string `json:"specifiers,omitempty" bson:"specifiers,omitempty"`
+	Status        MarketStatus      `xml:"status,attr,omitempty" json:"status" bson:"status"`
 	CashoutStatus *CashoutStatus    `xml:"cashout_status,attr,omitempty" json:"cashoutStatus,omitempty" bson:"cashoutStatus,omitempty"`
 	// If present, this is set to 1, which states that this is the most balanced
 	// or recommended market line. This setting makes most sense for markets where

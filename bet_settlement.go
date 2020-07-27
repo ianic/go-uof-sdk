@@ -29,9 +29,9 @@ type BetSettlementMarket struct {
 }
 
 type BetSettlementOutcome struct {
-	ID             int           `json:"id" bson:"id,omitempty"`
+	ID             int           `json:"id" bson:"id"`
 	PlayerID       int           `json:"playerId,omitempty" bson:"playerId,omitempty"`
-	Result         OutcomeResult `json:"result" bson:"result,omitempty"`
+	Result         OutcomeResult `json:"result" bson:"result"`
 	DeadHeatFactor float64       `json:"deadHeatFactor,omitempty" bson:"deadHeatFactor,omitempty"`
 }
 

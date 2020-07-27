@@ -23,7 +23,7 @@ type BetStop struct {
 	Groups    []string     `json:"groups" bson:"groups,omitempty"`
 	MarketIDs []int        `json:"marketsIds" bson:"marketIds,omitempty"`
 	Producer  Producer     `xml:"product,attr" json:"producer" bson:"producer,omitempty"`
-	Status    MarketStatus `json:"status,omitempty" bson:"status,omitempty"`
+	Status    MarketStatus `json:"status" bson:"status"`
 }
 
 func (t *BetStop) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {

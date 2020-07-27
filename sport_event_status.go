@@ -11,7 +11,7 @@ import "encoding/xml"
 // Reference: https://docs.betradar.com/display/BD/UOF+-+Sport+event+status
 type SportEventStatus struct {
 	// High-level generic status of the match.
-	Status EventStatus `xml:"status,attr" json:"status" bson:"status,omitempty"`
+	Status EventStatus `xml:"status,attr" json:"status" bson:"status"`
 	// Does Betradar have a scout watching the game.
 	Reporting *EventReporting `xml:"reporting,attr,omitempty" json:"reporting,omitempty" bson:"reporting,omitempty"`
 	// Current score for the home team.

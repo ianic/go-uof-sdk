@@ -3,8 +3,8 @@ package uof
 type ProducersChange []ProducerChange
 
 type ProducerChange struct {
-	Producer   Producer       `json:"producer,omitempty" bson:"producer,omitempty"`
-	Status     ProducerStatus `json:"status,omitempty" bson:"status,omitempty"`
+	Producer   Producer       `json:"producer" bson:"producer"`
+	Status     ProducerStatus `json:"status" bson:"status"`
 	RecoveryID int            `json:"recoveryId,omitempty" bson:"recoveryId,omitempty"`
 	Timestamp  int            `json:"timestamp,omitempty" bson:"timestamp,omitempty"`
 }
