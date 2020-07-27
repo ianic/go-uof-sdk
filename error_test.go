@@ -1,6 +1,7 @@
 package uof
 
 import (
+	"encoding/xml"
 	"errors"
 	"fmt"
 	"testing"
@@ -40,4 +41,17 @@ func TestInnerError(t *testing.T) {
 	assert.Equal(t, inner, err)
 
 	assert.Equal(t, "NOTICE uof error op: operation, inner: some inner error", ue.Error())
+}
+
+func TestParseResponse(t *testing.T) {
+	data := `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response response_code="BAD_REQUEST">
+	<action>Request for booking an event : sr:match:22868927 from bookmaker: 19638 received</action>
+	<message>ERROR. Bad Request: The match does not belong to any available package</message>
+</response>`
+
+	var rsp UOFRsp
+	err := xml.Unmarshal([]byte(data), &rsp)
+	assert.Nil(t, err)
+	pp(rsp)
 }

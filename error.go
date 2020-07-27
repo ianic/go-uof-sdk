@@ -1,6 +1,7 @@
 package uof
 
 import (
+	"encoding/xml"
 	"errors"
 	"fmt"
 )
@@ -35,6 +36,18 @@ type APIError struct {
 	StatusCode int
 	Response   string
 	Inner      error
+}
+
+type UOFRsp struct {
+	Code    string `xml:"response_code,attr"`
+	Action  string `xml:"action"`
+	Message string `xml:"message"`
+}
+
+func (e APIError) UOFRsp() (UOFRsp, error) {
+	var rsp UOFRsp
+	err := xml.Unmarshal([]byte(e.Response), &rsp)
+	return rsp, err
 }
 
 func (e APIError) Error() string {
