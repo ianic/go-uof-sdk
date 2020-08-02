@@ -20,6 +20,10 @@ func TestBetCancel(t *testing.T) {
 	assert.Equal(t, 62, bc.Markets[0].ID)
 	assert.Equal(t, 2296512168, bc.Markets[0].LineID)
 
+	assert.Equal(t, 535, bc.Markets[1].ID)
+	assert.Equal(t, 3190608427, bc.Markets[1].VariantID)
+	assert.Equal(t, 1846495495, bc.Markets[1].LineID)
+
 	// use message entry point
 	m, err := NewQueueMessage("hi.pre.-.bet_cancel.1.sr:match.1234.-", buf)
 	assert.NoError(t, err)
