@@ -18,6 +18,7 @@ type BetSettlement struct {
 type BetSettlementMarket struct {
 	ID         int               `xml:"id,attr" json:"id" bson:"id,omitempty"`
 	LineID     int               `json:"lineId" bson:"lineId,omitempty"`
+	VariantID  int               `json:"variantId,omitempty" bson:"variantId,omitempty"`
 	Specifiers map[string]string `json:"specifiers,omitempty" bson:"specifiers,omitempty"`
 	// Describes the reason for voiding certain outcomes for a particular market.
 	// Only set if at least one of the outcomes have a void_factor. A list of void
@@ -83,7 +84,12 @@ func (t *BetSettlementMarket) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 	}
 	t.Specifiers = toSpecifiers(overlay.Specifiers, overlay.ExtendedSpecifiers)
 	t.LineID = toLineID(overlay.Specifiers)
+	t.VariantID = toVariantID(variantSpecifier(t.Specifiers))
 	return nil
+}
+
+func (t *BetSettlementMarket) VariantIDFix() int {
+	return toVariantID(variantSpecifier(t.Specifiers))
 }
 
 func (t *BetSettlementOutcome) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {

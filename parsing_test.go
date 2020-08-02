@@ -92,6 +92,18 @@ func TestBetSettlement(t *testing.T) {
 	assert.NotNil(t, m.BetSettlement)
 	assert.Equal(t, bs, m.BetSettlement)
 
+	// test variantID
+	m3 := bs.Markets[3]
+	assert.Equal(t, m3.VariantID, 3190608427)
+	for i, m := range bs.Markets {
+		if i == 3 {
+			assert.Equal(t, m.VariantID, 3190608427)
+		} else {
+			assert.Equal(t, m.VariantID, 0)
+		}
+		assert.Equal(t, m.VariantID, m.VariantIDFix())
+	}
+
 }
 
 func TestRollbackBetSettlement(t *testing.T) {

@@ -154,7 +154,11 @@ func (t *Outcome) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 }
 
 func (m Market) VariantSpecifier() string {
-	for k, v := range m.Specifiers {
+	return variantSpecifier(m.Specifiers)
+}
+
+func variantSpecifier(specifiers map[string]string) string {
+	for k, v := range specifiers {
 		if k == "variant" {
 			return v
 		}
