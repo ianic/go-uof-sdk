@@ -53,5 +53,5 @@ func TestParseResponse(t *testing.T) {
 	var rsp UOFRsp
 	err := xml.Unmarshal([]byte(data), &rsp)
 	assert.Nil(t, err)
-	pp(rsp)
+	//pp(rsp)
 }
