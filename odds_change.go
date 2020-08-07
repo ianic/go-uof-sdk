@@ -154,7 +154,8 @@ func (t *Outcome) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 }
 
 func (m Market) VariantSpecifier() string {
-	return variantSpecifier(m.Specifiers)
+	v := variantSpecifier(m.Specifiers)
+	return strings.TrimPrefix(v, "replay:")
 }
 
 func variantSpecifier(specifiers map[string]string) string {
