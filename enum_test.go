@@ -128,15 +128,6 @@ func TestURNEventID(t *testing.T) {
 	}
 }
 
-// func TestURNType(t *testing.T) {
-// 	data := []struct {
-// 		u string
-// 		t int8
-// 	}{
-// 	{"sr:match:127", }
-// 	}
-// }
-
 func TestProducersChange(t *testing.T) {
 	var pc ProducersChange
 	pc.Add(ProducerLiveOdds, 123)
