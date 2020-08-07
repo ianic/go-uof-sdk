@@ -39,7 +39,7 @@ type RollbackBetCancel struct {
 	EventID   int               `json:"eventId" bson:"eventId,omitempty"`
 	EventURN  URN               `xml:"event_id,attr" json:"eventURN" bson:"eventURN,omitempty"`
 	Producer  Producer          `xml:"product,attr" json:"producer" bson:"producer,omitempty"`
-	Timestamp int               `xml:"timestamp,attr" json:"Timestamp" bson:"timestamp,omitempty"`
+	Timestamp int               `xml:"timestamp,attr" json:"timestamp" bson:"timestamp,omitempty"`
 	RequestID *int              `xml:"request_id,attr,omitempty" json:"requestId,omitempty" bson:"requestId,omitempty"`
 	StartTime *int              `xml:"start_time,attr,omitempty" json:"startTime,omitempty" bson:"startTime,omitempty"`
 	EndTime   *int              `xml:"end_time,attr,omitempty" json:"endTime,omitempty" bson:"endTime,omitempty"`

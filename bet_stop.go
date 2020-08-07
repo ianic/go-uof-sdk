@@ -20,8 +20,8 @@ type BetStop struct {
 	EventURN  URN          `xml:"event_id,attr" json:"eventURN" bson:"eventURN,omitempty"`
 	Timestamp int          `xml:"timestamp,attr" json:"timestamp" bson:"timestamp,omitempty"`
 	RequestID *int         `xml:"request_id,attr,omitempty" json:"requestId,omitempty" bson:"requestId,omitempty"`
-	Groups    []string     `json:"groups" bson:"groups,omitempty"`
-	MarketIDs []int        `json:"marketsIds" bson:"marketIds,omitempty"`
+	Groups    []string     `json:"groups,omitempty" bson:"groups,omitempty"`
+	MarketIDs []int        `json:"marketsIds,omitempty" bson:"marketIds,omitempty"`
 	Producer  Producer     `xml:"product,attr" json:"producer" bson:"producer,omitempty"`
 	Status    MarketStatus `json:"status" bson:"status"`
 }
