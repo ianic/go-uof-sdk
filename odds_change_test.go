@@ -108,53 +108,96 @@ func testOddsChangeSpecifiers(t *testing.T, oc *OddsChange) {
 	assert.Equal(t, "2", s["pero"])
 }
 
+func TestToLineID(t *testing.T) {
+	assert.Equal(t, toLineID("set=2|game=3|point=1"), 3674095794)
+	assert.Equal(t, toLineID("variant=sr:point_range:76+"), 523475930)
+	assert.Equal(t, toLineID("variant=sr:point_range:76+|set=2|game=3|point=1"), 528183265)
+}
+
 func TestSpecifiersParsing(t *testing.T) {
 	data := []struct {
 		specifiers        string
 		extendedSpecifers string
 		specifiersMap     map[string]string
 		variantSpecifier  string
+		lineID            int
+		lineID2           int
 	}{
 		{
 			specifiers:    "total=1.5|from=1|to=15",
 			specifiersMap: map[string]string{"total": "1.5", "from": "1", "to": "15"},
+			lineID:        1995756630,
+			lineID2:       1995756630,
 		},
 		{
 			specifiers:        "total=1.5|from=1",
 			extendedSpecifers: "to=15",
 			specifiersMap:     map[string]string{"total": "1.5", "from": "1", "to": "15"},
+			lineID:            524069804,
+			lineID2:           524069804,
 		},
 		{
 			extendedSpecifers: "to=15",
 			specifiersMap:     map[string]string{"to": "15"},
+			lineID:            0,
+			lineID2:           0,
 		},
 		{
 			specifiers:        "from=1",
 			extendedSpecifers: "||",
 			specifiersMap:     map[string]string{"from": "1"},
+			lineID:            570165323,
+			lineID2:           570165323,
 		},
-
 		{
 			specifiers:       "total=1.5|variant=sr:exact_goals:4+|from=1|to=15",
 			specifiersMap:    map[string]string{"total": "1.5", "from": "1", "to": "15", "variant": "sr:exact_goals:4+"},
 			variantSpecifier: "sr:exact_goals:4+",
+			lineID:           1270808668,
+			lineID2:          1995756630,
 		},
-
 		{
 			// ne pronalazim ispravan primjer kako bi specifier trebao izgledat za player=?, pa mi nije jasno koji prefix se trima
 			// odds_change.go:174
 			specifiers:    "player=Jack_Lee|from=5|to=10",
 			specifiersMap: map[string]string{"from": "5", "to": "10", "player": "Jack_Lee"},
+			lineID:        2286178388,
+			lineID2:       2286178388,
+		},
+		{
+			specifiers:       "variant=sr:exact_goals:4+",
+			specifiersMap:    map[string]string{"variant": "sr:exact_goals:4+"},
+			variantSpecifier: "sr:exact_goals:4+",
+			lineID:           532860657,
+			lineID2:          0,
+		},
+		{
+			specifiers:        "total=1.5|from=1|variant=sr:exact_goals:4+",
+			extendedSpecifers: "to=15",
+			specifiersMap:     map[string]string{"total": "1.5", "from": "1", "to": "15", "variant": "sr:exact_goals:4+"},
+			variantSpecifier:  "sr:exact_goals:4+",
+			lineID:            4268891890,
+			lineID2:           524069804, // same as in second example, same but without variant specifier
 		},
 	}
 	for i, d := range data {
 		s := toSpecifiers(d.specifiers, d.extendedSpecifers)
+		s2, lineID := toSpecifiersLineID(d.specifiers, d.extendedSpecifers)
+
 		assert.Equal(t, len(d.specifiersMap), len(s))
-		m := Market{Specifiers: d.specifiersMap}
-		assert.Equal(t, d.variantSpecifier, m.VariantSpecifier())
+		assert.Equal(t, d.variantSpecifier, variantSpecifier(s))
 		for k, v := range d.specifiersMap {
 			assert.Equal(t, v, s[k], fmt.Sprintf("failed on %d", i))
 		}
+
+		assert.Equal(t, len(d.specifiersMap), len(s2))
+		assert.Equal(t, d.variantSpecifier, variantSpecifier(s2))
+		for k, v := range d.specifiersMap {
+			assert.Equal(t, v, s2[k], fmt.Sprintf("failed on %d", i))
+		}
+
+		assert.Equal(t, d.lineID, toLineID(d.specifiers), "failed lineID for %d, expected %d", i, d.lineID)
+		assert.Equal(t, d.lineID2, lineID, "failed lineID2 for %d, expected %d", i, d.lineID)
 	}
 
 }

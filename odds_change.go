@@ -128,9 +128,8 @@ func (m *Market) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	if overlay.Status != nil {
 		m.Status = MarketStatus(*overlay.Status)
 	}
-	m.Specifiers = toSpecifiers(overlay.Specifiers, overlay.ExtendedSpecifiers)
-	m.LineID = toLineID(overlay.Specifiers)
-	m.VariantID = toVariantID(m.VariantSpecifier())
+	m.Specifiers, m.LineID = toSpecifiersLineID(overlay.Specifiers, overlay.ExtendedSpecifiers)
+	m.VariantID = toVariantID(variantSpecifier(m.Specifiers))
 	if overlay.MarketMetadata != nil {
 		m.NextBetstop = overlay.MarketMetadata.NextBetstop
 	}
@@ -158,15 +157,18 @@ func (m Market) VariantSpecifier() string {
 	return strings.TrimPrefix(v, "replay:")
 }
 
+const variantSpecifireKey = "variant"
+
 func variantSpecifier(specifiers map[string]string) string {
 	for k, v := range specifiers {
-		if k == "variant" {
+		if k == variantSpecifireKey {
 			return v
 		}
 	}
 	return ""
 }
 
+// not used any more except in test to check that the new implementation is returning same result as the old one
 func toSpecifiers(specifiers, extendedSpecifiers string) map[string]string {
 	allSpecifiers := specifiers
 	if extendedSpecifiers != "" {
@@ -187,6 +189,47 @@ func toSpecifiers(specifiers, extendedSpecifiers string) map[string]string {
 		}
 	}
 	return sm
+}
+
+func toSpecifiersLineID(specifiers, extendedSpecifiers string) (map[string]string, int) {
+	if len(specifiers) == 0 && len(extendedSpecifiers) == 0 {
+		return nil, 0
+	}
+	sm := make(map[string]string)
+	hasVariant := false
+	var withoutVariant []string
+	for _, s := range strings.Split(specifiers, "|") {
+		if p := strings.Split(s, "="); len(p) == 2 {
+			k := p[0]
+			v := p[1]
+			if k == "player" {
+				v = strings.TrimPrefix(v, srPlayer)
+			}
+			if k == variantSpecifireKey {
+				hasVariant = true
+			} else {
+				withoutVariant = append(withoutVariant, s)
+			}
+			sm[k] = v
+		}
+	}
+	for _, s := range strings.Split(extendedSpecifiers, "|") {
+		if p := strings.Split(s, "="); len(p) == 2 {
+			k := p[0]
+			v := p[1]
+			if k == "player" {
+				v = strings.TrimPrefix(v, srPlayer)
+			}
+			sm[k] = v
+		}
+	}
+	if len(specifiers) == 0 {
+		return sm, 0
+	}
+	if !hasVariant {
+		return sm, toLineID(specifiers)
+	}
+	return sm, toLineID(strings.Join(withoutVariant, "|"))
 }
 
 func toPlayerID(id string) int {

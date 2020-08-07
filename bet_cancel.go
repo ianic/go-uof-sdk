@@ -72,8 +72,7 @@ func (t *BetCancelMarket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 	if err := d.DecodeElement(&overlay, &start); err != nil {
 		return err
 	}
-	t.LineID = toLineID(overlay.Specifiers)
-	t.Specifiers = toSpecifiers(overlay.Specifiers, overlay.ExtendedSpecifiers)
+	t.Specifiers, t.LineID = toSpecifiersLineID(overlay.Specifiers, overlay.ExtendedSpecifiers)
 	t.VariantID = toVariantID(variantSpecifier(t.Specifiers))
 	return nil
 }
