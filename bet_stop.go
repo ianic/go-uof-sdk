@@ -16,13 +16,13 @@ import (
 // moved to suspended. However, if the market is already deactivated, settled or
 // cancelled this is not a good practice. Only move ACTIVE markets to suspended.
 type BetStop struct {
-	EventID   int          `json:"eventId" bson:"eventId,omitempty"`
-	EventURN  URN          `xml:"event_id,attr" json:"eventURN" bson:"eventURN,omitempty"`
-	Timestamp int          `xml:"timestamp,attr" json:"timestamp" bson:"timestamp,omitempty"`
+	EventID   int          `json:"eventId,omitempty" bson:"eventId,omitempty"`
+	EventURN  URN          `xml:"event_id,attr" json:"eventURN,omitempty" bson:"eventURN,omitempty"`
+	Timestamp int          `xml:"timestamp,attr" json:"timestamp,omitempty" bson:"timestamp,omitempty"`
 	RequestID *int         `xml:"request_id,attr,omitempty" json:"requestId,omitempty" bson:"requestId,omitempty"`
 	Groups    []string     `json:"groups,omitempty" bson:"groups,omitempty"`
 	MarketIDs []int        `json:"marketsIds,omitempty" bson:"marketIds,omitempty"`
-	Producer  Producer     `xml:"product,attr" json:"producer" bson:"producer,omitempty"`
+	Producer  Producer     `xml:"product,attr" json:"producer,omitempty" bson:"producer,omitempty"`
 	Status    MarketStatus `json:"status" bson:"status"`
 }
 

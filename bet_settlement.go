@@ -3,15 +3,15 @@ package uof
 import "encoding/xml"
 
 type BetSettlement struct {
-	EventID   int      `json:"eventId" bson:"eventId,omitempty"`
-	EventURN  URN      `xml:"event_id,attr" json:"eventURN" bson:"eventURN,omitempty"`
-	Producer  Producer `xml:"product,attr" json:"producer" bson:"producer,omitempty"`
-	Timestamp int      `xml:"timestamp,attr" json:"timestamp" bson:"timestamp,omitempty"`
+	EventID   int      `json:"eventId,omitempty" bson:"eventId,omitempty"`
+	EventURN  URN      `xml:"event_id,attr" json:"eventURN,omitempty" bson:"eventURN,omitempty"`
+	Producer  Producer `xml:"product,attr" json:"producer,omitempty" bson:"producer,omitempty"`
+	Timestamp int      `xml:"timestamp,attr" json:"timestamp,omitempty" bson:"timestamp,omitempty"`
 	RequestID *int     `xml:"request_id,attr,omitempty" json:"requestId,omitempty" bson:"requestId,omitempty"`
 	// Is this bet-settlement sent as a consequence of scouts reporting the
 	// results live (1) or is this bet-settlement sent post-match when the
 	// official results have been confirmed (2)
-	Certainty *int8                 `xml:"certainty,attr" json:"certainty" bson:"certainty,omitempty"` // May be one of 1, 2
+	Certainty *int8                 `xml:"certainty,attr" json:"certainty,omitempty" bson:"certainty,omitempty"` // May be one of 1, 2
 	Markets   []BetSettlementMarket `xml:"outcomes>market" json:"markets" bson:"markets,omitempty"`
 }
 
@@ -37,10 +37,10 @@ type BetSettlementOutcome struct {
 }
 
 type RollbackBetSettlement struct {
-	EventID   int               `json:"eventId" bson:"eventId,omitempty"`
-	EventURN  URN               `xml:"event_id,attr" json:"eventURN" bson:"eventURN,omitempty"`
-	Producer  Producer          `xml:"product,attr" json:"producer" bson:"producer,omitempty"`
-	Timestamp int               `xml:"timestamp,attr" json:"timestamp" bson:"timestamp,omitempty"`
+	EventID   int               `json:"eventId,omitempty" bson:"eventId,omitempty"`
+	EventURN  URN               `xml:"event_id,attr" json:"eventURN,omitempty" bson:"eventURN,omitempty"`
+	Producer  Producer          `xml:"product,attr" json:"producer,omitempty" bson:"producer,omitempty"`
+	Timestamp int               `xml:"timestamp,attr" json:"timestamp,omitempty" bson:"timestamp,omitempty"`
 	RequestID *int              `xml:"request_id,attr,omitempty" json:"requestId,omitempty" bson:"requestId,omitempty"`
 	Markets   []BetCancelMarket `xml:"market" json:"markets" bson:"markets,omitempty"`
 }

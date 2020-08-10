@@ -13,12 +13,12 @@ import (
 // reported.
 // Reference: https://docs.betradar.com/display/BD/UOF+-+Odds+change
 type OddsChange struct {
-	EventID  int `json:"eventId" bson:"eventId,omitempty"`
-	EventURN URN `xml:"event_id,attr" json:"eventURN" bson:"eventURN,omitempty"`
+	EventID  int `json:"eventId,omitempty" bson:"eventId,omitempty"`
+	EventURN URN `xml:"event_id,attr" json:"eventURN,omitempty" bson:"eventURN,omitempty"`
 	// Specifies which producer generated these odds. At any given point in time
 	// there should only be one product generating odds for a particular event.
 	Producer  Producer `xml:"product,attr" json:"producer,omitempty" bson:"producer,omitempty"`
-	Timestamp int      `xml:"timestamp,attr" json:"timestamp" bson:"timestamp,omitempty"`
+	Timestamp int      `xml:"timestamp,attr" json:"timestamp,omitempty" bson:"timestamp,omitempty"`
 	Markets   []Market `json:"markets,omitempty" bson:"markets,omitempty"`
 	// values in range 0-6   /v1/descriptions/betting_status.xml
 	BettingStatus *int `json:"bettingStatus,omitempty" bson:"bettingStatus,omitempty"`
