@@ -36,7 +36,9 @@ var producers = []struct {
 	{id: 10, name: "VDR", description: "Virtual Dog Racing", code: "vdr", scope: "virtual", recoveryWindow: 180},
 	{id: 11, name: "VHC", description: "Virtual Horse Classics", code: "vhc", scope: "virtual", recoveryWindow: 180},
 	{id: 12, name: "VTI", description: "Virtual Tennis In-Play", code: "vti", scope: "virtual", recoveryWindow: 180},
+	{id: 14, name: "C-Odds", description: "Competition Odds", code: "codds", scope: "live", recoveryWindow: 180},
 	{id: 15, name: "VBI", description: "Virtual Baseball In-Play", code: "vbi", scope: "virtual", recoveryWindow: 180},
+	{id: 16, name: "PB", description: "Performance betting", code: "performance", scope: "live|prematch", recoveryWindow: 180},
 }
 
 func (p Producer) String() string {
@@ -198,7 +200,7 @@ func (u URN) uniqueEventID() int {
 	case "sr:simple_tournament":
 		return suffixID(4)
 	case "test:match":
-		return suffixID(15)
+		return id //suffixID(15)
 	case "vf:match":
 		return suffixID(16)
 	case "vf:season":
@@ -270,6 +272,10 @@ func (u URN) IsTournament() bool {
 		return false
 	}
 	return p[1] == "season" || p[1] == "tournament"
+}
+
+func (u URN) IsTest() bool {
+	return strings.HasPrefix(string(u), "test:match:")
 }
 
 func toLineID(specifiers string) int {
