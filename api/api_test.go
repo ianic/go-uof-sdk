@@ -149,3 +149,17 @@ func TestListLive(t *testing.T) {
 	require.NoError(t, err)
 	fmt.Println("booked matches", booked)
 }
+
+func TestMatchStatus(t *testing.T) {
+	t.Skip("interactive test")
+	token, ok := os.LookupEnv(EnvToken)
+	if !ok {
+		t.Skip("integration token not found")
+	}
+	a, err := Staging(context.TODO(), token)
+	require.NoError(t, err)
+
+	ms, err := a.MatchStatuses(uof.LangEN)
+	require.NoError(t, err)
+	pp(ms)
+}

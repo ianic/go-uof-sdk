@@ -20,6 +20,7 @@ const (
 	liveEvents        = "/v1/sports/{{.Lang}}/schedules/live/schedule.xml"
 	pathTournaments   = "/v1/sports/{{.Lang}}/tournaments.xml"
 	pathBookLiveEvent = "/v1/liveodds/booking-calendar/events/{{.EventURN}}/book"
+	pathMatchStatuses = "/v1/descriptions/{{.Lang}}/match_status.xml"
 )
 
 // Markets all currently available markets for a language
@@ -190,4 +191,43 @@ func (a *API) BookAllLiveMatches(done map[string]bool) (int, map[string]bool, er
 		booked++
 	}
 	return booked, done, nil
+}
+
+func (a *API) MatchStatuses(lang uof.Lang) ([]MatchStatus, error) {
+	var ms matchStatusesRsp
+	err := a.getAs(&ms, pathMatchStatuses, &params{Lang: lang})
+	return ms.Stasuses, err
+}
+
+type matchStatusesRsp struct {
+	Stasuses []MatchStatus `xml:"match_status,omitempty"`
+}
+
+type MatchStatus struct {
+	ID          int    `xml:"id,attr" json:"id"`
+	Description string `xml:"description,attr" json:"description,omitempty"`
+	Period      int    `xml:"period_number,attr" json:"period,omitempty"`
+	Sports      []int  `json:"sports,omitempty"`
+}
+
+func (o *MatchStatus) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	type T MatchStatus
+	var overlay struct {
+		*T
+		SportIds []struct {
+			ID string `xml:"id,attr"`
+		} `xml:"sports>sport"`
+	}
+	overlay.T = (*T)(o)
+	if err := d.DecodeElement(&overlay, &start); err != nil {
+		return err
+	}
+	if l := len(overlay.SportIds); l > 0 {
+		sports := make([]int, 0, l)
+		for _, s := range overlay.SportIds {
+			sports = append(sports, uof.URN(s.ID).ID())
+		}
+		o.Sports = sports
+	}
+	return nil
 }
