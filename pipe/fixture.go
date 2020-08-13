@@ -68,7 +68,11 @@ func (f *fixture) eventURN(m *uof.Message) uof.URN {
 	if m.Type != uof.MessageTypeFixtureChange || m.FixtureChange == nil {
 		return uof.NoURN
 	}
-	return m.FixtureChange.EventURN
+	urn := m.FixtureChange.EventURN
+	if urn.IsTest() {
+		return uof.NoURN
+	}
+	return urn
 }
 
 // returns list of fixture changes urns appeared in 'in' during preload
@@ -122,6 +126,12 @@ func (f *fixture) preload() {
 }
 
 func (f *fixture) getFixture(eventURN uof.URN, receivedAt int) {
+	key := eventURN.EventID()
+	if f.em.fresh(key) {
+		return
+	}
+	f.em.insert(key)
+
 	f.subProcs.Add(len(f.languages))
 	for _, lang := range f.languages {
 		go func(lang uof.Lang) {
@@ -129,10 +139,6 @@ func (f *fixture) getFixture(eventURN uof.URN, receivedAt int) {
 			f.rateLimit <- struct{}{}
 			defer func() { <-f.rateLimit }()
 
-			key := uof.UIDWithLang(eventURN.EventID(), lang)
-			if f.em.fresh(key) {
-				return
-			}
 			if eventURN.IsTournament() {
 				x, err := f.api.Tournament(lang, eventURN)
 				if err != nil {
@@ -143,12 +149,15 @@ func (f *fixture) getFixture(eventURN uof.URN, receivedAt int) {
 			} else {
 				x, err := f.api.Fixture(lang, eventURN)
 				if err != nil {
+					if !uof.IsApiNotFoundErr(err) {
+						f.em.remove(key)
+					}
 					f.errc <- err
 					return
 				}
 				f.out <- uof.NewFixtureMessage(lang, *x, receivedAt)
 			}
-			f.em.insert(key)
+
 		}(lang)
 	}
 }

@@ -47,6 +47,11 @@ func (p *player) loop(in <-chan *uof.Message, out chan<- *uof.Message, errc chan
 }
 
 func (p *player) get(playerID, requestedAt int) {
+	if p.em.fresh(playerID) {
+		return
+	}
+	p.em.insert(playerID)
+
 	p.subProcs.Add(len(p.languages))
 	for _, lang := range p.languages {
 		go func(lang uof.Lang) {
@@ -54,15 +59,10 @@ func (p *player) get(playerID, requestedAt int) {
 			p.rateLimit <- struct{}{}
 			defer func() { <-p.rateLimit }()
 
-			key := uof.UIDWithLang(playerID, lang)
-			if p.em.fresh(key) {
-				return
-			}
-			p.em.insert(key)
 			ap, err := p.api.Player(lang, playerID)
 			if err != nil {
 				if !uof.IsApiNotFoundErr(err) {
-					p.em.remove(key)
+					p.em.remove(playerID)
 				}
 				p.errc <- err
 				return

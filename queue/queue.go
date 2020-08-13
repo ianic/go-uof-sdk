@@ -170,6 +170,10 @@ func dial(ctx context.Context, server, bookmakerID, token string, bind int8) (*C
 	if err != nil {
 		return nil, uof.Notice("conn.Consume", err)
 	}
+	// experimental:
+	// if err := chnl.Qos(1024*16, 0, true); err != nil {
+	// 	return nil, uof.Notice("conn.Qos", err)
+	// }
 
 	errs := make(chan *amqp.Error)
 	chnl.NotifyClose(errs)

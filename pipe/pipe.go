@@ -9,7 +9,7 @@ import (
 
 // Number of concurent api calls of one type. For example: no more than x
 // running Player api calls in any point in time.
-const ConcurentAPICallsLimit = 16
+const ConcurentAPICallsLimit = 64
 
 // What is a pipeline?
 // There's no formal definition of a pipeline in Go; it's just one of many kinds
@@ -199,7 +199,7 @@ func StageWithSubProcesses(looper stageWithDrainFunc) InnerStage {
 
 func StageWithSubProcessesSync(looper stageWithDrainFunc) InnerStage {
 	return func(in <-chan *uof.Message) (<-chan *uof.Message, <-chan error) {
-		out := make(chan *uof.Message)
+		out := make(chan *uof.Message, 1)
 		errc := make(chan error)
 
 		go func() {

@@ -74,26 +74,29 @@ func (s *markets) variantMarket(marketID int, variant string, requestedAt int) {
 		// TODO: it is not working for this type of variant markets
 		return
 	}
-	s.subProcs.Add(len(s.languages))
+	key := uof.Hash(variant)<<32 | marketID
+	if s.em.fresh(key) {
+		return
+	}
+	s.em.insert(key)
 
+	s.subProcs.Add(len(s.languages))
 	for _, lang := range s.languages {
 		go func(lang uof.Lang) {
 			defer s.subProcs.Done()
 			s.rateLimit <- struct{}{}
 			defer func() { <-s.rateLimit }()
 
-			key := uof.UIDWithLang(uof.Hash(variant)<<32|marketID, lang)
-			if s.em.fresh(key) {
-				return
-			}
-
 			ms, err := s.api.MarketVariant(lang, marketID, variant)
 			if err != nil {
+				if !uof.IsApiNotFoundErr(err) {
+					s.em.remove(key)
+				}
 				s.errc <- err
 				return
 			}
 			s.out <- uof.NewMarketsMessage(lang, ms, requestedAt)
-			s.em.insert(key)
+
 		}(lang)
 	}
 }

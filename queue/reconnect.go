@@ -10,14 +10,14 @@ import (
 )
 
 var (
-	maxInterval    = 16 * time.Second // max interval for exponential backoff
-	maxElapsedTime = 1 * time.Hour    // will give up if not connected longer than this
+	maxInterval    = 128 * time.Second // max interval for exponential backoff
+	maxElapsedTime = 4 * time.Hour     // will give up if not connected longer than this
 )
 
 // WithReconnect ensuers reconnects with exponential backoff interval
 func WithReconnect(ctx context.Context, conn *Connection) func() (<-chan *uof.Message, <-chan error) {
 	return func() (<-chan *uof.Message, <-chan error) {
-		out := make(chan *uof.Message)
+		out := make(chan *uof.Message, 1)
 		errc := make(chan error)
 
 		done := func() bool {
@@ -32,6 +32,7 @@ func WithReconnect(ctx context.Context, conn *Connection) func() (<-chan *uof.Me
 		reconnect := func() error {
 			nc, err := conn.reDial()
 			if err == nil {
+				// TODO send reconnect notification
 				conn = nc // replace existing with new connection
 			}
 			if err != nil {

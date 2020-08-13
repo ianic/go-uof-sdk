@@ -47,6 +47,11 @@ func (p *competitor) loop(in <-chan *uof.Message, out chan<- *uof.Message, errc 
 }
 
 func (p *competitor) get(competitorID, requestedAt int) {
+	if p.em.fresh(competitorID) {
+		return
+	}
+	p.em.insert(competitorID)
+
 	p.subProcs.Add(len(p.languages))
 	for _, lang := range p.languages {
 		go func(lang uof.Lang) {
@@ -54,14 +59,11 @@ func (p *competitor) get(competitorID, requestedAt int) {
 			p.rateLimit <- struct{}{}
 			defer func() { <-p.rateLimit }()
 
-			key := uof.UIDWithLang(competitorID, lang)
-			if p.em.fresh(key) {
-				return
-			}
-			p.em.insert(key)
 			cp, err := p.api.Competitor(lang, competitorID)
 			if err != nil {
-				p.em.remove(key)
+				if !uof.IsApiNotFoundErr(err) {
+					p.em.remove(competitorID)
+				}
 				p.errc <- err
 				return
 			}

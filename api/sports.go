@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/xml"
 	"errors"
-	"fmt"
 	"strings"
 	"time"
 
@@ -47,9 +46,7 @@ func (a *API) Tournament(lang uof.Lang, eventURN uof.URN) (*uof.FixtureTournamen
 
 func (a *API) Tournaments(lang uof.Lang) ([]uof.FixtureTournament, error) {
 	var rsp tournamentsRsp
-	err := a.getAs(&rsp, pathTournaments, &params{Lang: lang})
-	fmt.Printf("%v", rsp.Tournaments)
-	return rsp.Tournaments, err
+	return rsp.Tournaments, a.getAs(&rsp, pathTournaments, &params{Lang: lang})
 }
 
 func (a *API) Player(lang uof.Lang, playerID int) (*uof.Player, error) {
