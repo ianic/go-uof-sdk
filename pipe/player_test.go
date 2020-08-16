@@ -14,11 +14,11 @@ type playerAPIMock struct {
 	sync.Mutex
 }
 
-func (m *playerAPIMock) Player(lang uof.Lang, playerID int) (*uof.Player, error) {
+func (m *playerAPIMock) Player(lang uof.Lang, playerID int) (*uof.Player, []byte, error) {
 	m.Lock()
 	defer m.Unlock()
 	m.requests[uof.UIDWithLang(playerID, lang)] = struct{}{}
-	return nil, nil
+	return nil, nil, nil
 }
 
 func TestPlayerPipe(t *testing.T) {

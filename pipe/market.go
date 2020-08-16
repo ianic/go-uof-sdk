@@ -9,8 +9,8 @@ import (
 )
 
 type marketsAPI interface {
-	Markets(lang uof.Lang) (uof.MarketDescriptions, error)
-	MarketVariant(lang uof.Lang, marketID int, variant string) (uof.MarketDescriptions, error)
+	Markets(lang uof.Lang) (uof.MarketDescriptions, []byte, error)
+	MarketVariant(lang uof.Lang, marketID int, variant string) (uof.MarketDescriptions, []byte, error)
 }
 
 type markets struct {
@@ -59,12 +59,12 @@ func (s *markets) getAll() {
 		go func(lang uof.Lang) {
 			defer s.subProcs.Done()
 
-			ms, err := s.api.Markets(lang)
+			ms, raw, err := s.api.Markets(lang)
 			if err != nil {
 				s.errc <- err
 				return
 			}
-			s.out <- uof.NewMarketsMessage(lang, ms, requestedAt)
+			s.out <- uof.NewMarketsMessage(lang, ms, requestedAt, raw)
 		}(lang)
 	}
 }
@@ -87,7 +87,7 @@ func (s *markets) variantMarket(marketID int, variant string, requestedAt int) {
 			s.rateLimit <- struct{}{}
 			defer func() { <-s.rateLimit }()
 
-			ms, err := s.api.MarketVariant(lang, marketID, variant)
+			ms, raw, err := s.api.MarketVariant(lang, marketID, variant)
 			if err != nil {
 				if !uof.IsApiNotFoundErr(err) {
 					s.em.remove(key)
@@ -95,7 +95,7 @@ func (s *markets) variantMarket(marketID int, variant string, requestedAt int) {
 				s.errc <- err
 				return
 			}
-			s.out <- uof.NewMarketsMessage(lang, ms, requestedAt)
+			s.out <- uof.NewMarketsMessage(lang, ms, requestedAt, raw)
 
 		}(lang)
 	}

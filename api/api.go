@@ -104,15 +104,15 @@ func (a *API) Ping() error {
 	return err
 }
 
-func (a *API) getAs(o interface{}, tpl string, p *params) error {
+func (a *API) getAs(o interface{}, tpl string, p *params) ([]byte, error) {
 	buf, err := a.get(tpl, p)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if err := xml.Unmarshal(buf, o); err != nil {
-		return uof.Notice("unmarshal", err)
+		return nil, uof.Notice("unmarshal", err)
 	}
-	return nil
+	return buf, nil
 }
 
 // make http get request

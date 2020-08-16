@@ -14,15 +14,15 @@ type marketsAPIMock struct {
 	sync.Mutex
 }
 
-func (m *marketsAPIMock) Markets(lang uof.Lang) (uof.MarketDescriptions, error) {
-	return nil, nil
+func (m *marketsAPIMock) Markets(lang uof.Lang) (uof.MarketDescriptions, []byte, error) {
+	return nil, nil, nil
 }
 
-func (m *marketsAPIMock) MarketVariant(lang uof.Lang, marketID int, variant string) (uof.MarketDescriptions, error) {
+func (m *marketsAPIMock) MarketVariant(lang uof.Lang, marketID int, variant string) (uof.MarketDescriptions, []byte, error) {
 	m.Lock()
 	defer m.Unlock()
 	m.requests[fmt.Sprintf("%s %d %s", lang, marketID, variant)] = struct{}{}
-	return nil, nil
+	return nil, nil, nil
 }
 
 func TestMarketsPipe(t *testing.T) {

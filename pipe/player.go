@@ -8,7 +8,7 @@ import (
 )
 
 type playerAPI interface {
-	Player(lang uof.Lang, playerID int) (*uof.Player, error)
+	Player(lang uof.Lang, playerID int) (*uof.Player, []byte, error)
 }
 
 type player struct {
@@ -59,7 +59,7 @@ func (p *player) get(playerID, requestedAt int) {
 			p.rateLimit <- struct{}{}
 			defer func() { <-p.rateLimit }()
 
-			ap, err := p.api.Player(lang, playerID)
+			ap, raw, err := p.api.Player(lang, playerID)
 			if err != nil {
 				if !uof.IsApiNotFoundErr(err) {
 					p.em.remove(playerID)
@@ -67,7 +67,7 @@ func (p *player) get(playerID, requestedAt int) {
 				p.errc <- err
 				return
 			}
-			p.out <- uof.NewPlayerMessage(lang, ap, requestedAt)
+			p.out <- uof.NewPlayerMessage(lang, ap, requestedAt, raw)
 		}(lang)
 	}
 }

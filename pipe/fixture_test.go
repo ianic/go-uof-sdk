@@ -16,12 +16,12 @@ type fixtureAPIMock struct {
 	sync.Mutex
 }
 
-func (m *fixtureAPIMock) Fixture(lang uof.Lang, eventURN uof.URN) (*uof.Fixture, error) {
+func (m *fixtureAPIMock) Fixture(lang uof.Lang, eventURN uof.URN) (*uof.Fixture, []byte, error) {
 	m.eventURN = eventURN
-	return &uof.Fixture{}, nil
+	return &uof.Fixture{}, nil, nil
 }
-func (m *fixtureAPIMock) Tournament(lang uof.Lang, eventURN uof.URN) (*uof.FixtureTournament, error) {
-	return nil, nil
+func (m *fixtureAPIMock) Tournament(lang uof.Lang, eventURN uof.URN) (*uof.FixtureTournament, []byte, error) {
+	return nil, nil, nil
 }
 func (m *fixtureAPIMock) Fixtures(lang uof.Lang, to time.Time) (<-chan uof.Fixture, <-chan error) {
 	m.preloadTo = to

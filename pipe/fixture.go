@@ -8,8 +8,8 @@ import (
 )
 
 type fixtureAPI interface {
-	Fixture(lang uof.Lang, eventURN uof.URN) (*uof.Fixture, error)
-	Tournament(lang uof.Lang, eventURN uof.URN) (*uof.FixtureTournament, error)
+	Fixture(lang uof.Lang, eventURN uof.URN) (*uof.Fixture, []byte, error)
+	Tournament(lang uof.Lang, eventURN uof.URN) (*uof.FixtureTournament, []byte, error)
 	Fixtures(lang uof.Lang, to time.Time) (<-chan uof.Fixture, <-chan error)
 }
 
@@ -30,7 +30,6 @@ func Fixture(api fixtureAPI, languages []uof.Lang, preloadTo time.Time) InnerSta
 		api:       api,
 		languages: languages,
 		em:        newExpireMap(time.Minute),
-		//requests:  make(map[string]time.Time),
 		subProcs:  &sync.WaitGroup{},
 		rateLimit: make(chan struct{}, ConcurentAPICallsLimit),
 		preloadTo: preloadTo,
@@ -114,8 +113,8 @@ func (f *fixture) preload() {
 			defer wg.Done()
 			in, errc := f.api.Fixtures(lang, f.preloadTo)
 			for x := range in {
-				f.out <- uof.NewFixtureMessage(lang, x, uof.CurrentTimestamp())
-				f.em.insert(uof.UIDWithLang(x.URN.EventID(), lang))
+				f.out <- uof.NewFixtureMessage(lang, x, uof.CurrentTimestamp(), nil)
+				f.em.insert(x.URN.EventID())
 			}
 			for err := range errc {
 				f.errc <- err
@@ -140,14 +139,14 @@ func (f *fixture) getFixture(eventURN uof.URN, receivedAt int) {
 			defer func() { <-f.rateLimit }()
 
 			if eventURN.IsTournament() {
-				x, err := f.api.Tournament(lang, eventURN)
+				x, raw, err := f.api.Tournament(lang, eventURN)
 				if err != nil {
 					f.errc <- err
 					return
 				}
-				f.out <- uof.NewTournamentMessage(lang, *x, receivedAt)
+				f.out <- uof.NewTournamentMessage(lang, *x, receivedAt, raw)
 			} else {
-				x, err := f.api.Fixture(lang, eventURN)
+				x, raw, err := f.api.Fixture(lang, eventURN)
 				if err != nil {
 					if !uof.IsApiNotFoundErr(err) {
 						f.em.remove(key)
@@ -155,7 +154,7 @@ func (f *fixture) getFixture(eventURN uof.URN, receivedAt int) {
 					f.errc <- err
 					return
 				}
-				f.out <- uof.NewFixtureMessage(lang, *x, receivedAt)
+				f.out <- uof.NewFixtureMessage(lang, *x, receivedAt, raw)
 			}
 
 		}(lang)

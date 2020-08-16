@@ -232,7 +232,7 @@ func NewAPIMessage(lang Lang, typ MessageType, body []byte) (*Message, error) {
 	return m, nil
 }
 
-func NewMarketsMessage(lang Lang, ms MarketDescriptions, requestedAt int) *Message {
+func NewMarketsMessage(lang Lang, ms MarketDescriptions, requestedAt int, raw []byte) *Message {
 	m := &Message{
 		Header: Header{
 			Type:        MessageTypeMarkets,
@@ -240,12 +240,13 @@ func NewMarketsMessage(lang Lang, ms MarketDescriptions, requestedAt int) *Messa
 			ReceivedAt:  uniqTimestamp(),
 			RequestedAt: requestedAt,
 		},
+		Raw:  raw,
 		Body: Body{Markets: ms},
 	}
 	return m
 }
 
-func NewPlayerMessage(lang Lang, player *Player, requestedAt int) *Message {
+func NewPlayerMessage(lang Lang, player *Player, requestedAt int, raw []byte) *Message {
 	return &Message{
 		Header: Header{
 			Type:        MessageTypePlayer,
@@ -253,6 +254,7 @@ func NewPlayerMessage(lang Lang, player *Player, requestedAt int) *Message {
 			ReceivedAt:  uniqTimestamp(),
 			RequestedAt: requestedAt,
 		},
+		Raw:  raw,
 		Body: Body{Player: player},
 	}
 }
@@ -297,7 +299,7 @@ func NewProducersChangeMessage(pc ProducersChange) *Message {
 	}
 }
 
-func NewFixtureMessage(lang Lang, x Fixture, requestedAt int) *Message {
+func NewFixtureMessage(lang Lang, x Fixture, requestedAt int, raw []byte) *Message {
 	return &Message{
 		Header: Header{
 			Type:        MessageTypeFixture,
@@ -308,11 +310,12 @@ func NewFixtureMessage(lang Lang, x Fixture, requestedAt int) *Message {
 			ReceivedAt:  uniqTimestamp(),
 			RequestedAt: requestedAt,
 		},
+		Raw:  raw,
 		Body: Body{Fixture: &x},
 	}
 }
 
-func NewTournamentMessage(lang Lang, x FixtureTournament, requestedAt int) *Message {
+func NewTournamentMessage(lang Lang, x FixtureTournament, requestedAt int, raw []byte) *Message {
 	return &Message{
 		Header: Header{
 			Type:        MessageTypeTournament,
@@ -323,6 +326,7 @@ func NewTournamentMessage(lang Lang, x FixtureTournament, requestedAt int) *Mess
 			ReceivedAt:  uniqTimestamp(),
 			RequestedAt: requestedAt,
 		},
+		Raw:  raw,
 		Body: Body{Tournament: &x},
 	}
 }

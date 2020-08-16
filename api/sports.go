@@ -23,40 +23,47 @@ const (
 )
 
 // Markets all currently available markets for a language
-func (a *API) Markets(lang uof.Lang) (uof.MarketDescriptions, error) {
+func (a *API) Markets(lang uof.Lang) (uof.MarketDescriptions, []byte, error) {
 	var mr marketsRsp
-	return mr.Markets, a.getAs(&mr, pathMarkets, &params{Lang: lang})
+	raw, err := a.getAs(&mr, pathMarkets, &params{Lang: lang})
+	return mr.Markets, raw, err
 }
 
-func (a *API) MarketVariant(lang uof.Lang, marketID int, variant string) (uof.MarketDescriptions, error) {
+func (a *API) MarketVariant(lang uof.Lang, marketID int, variant string) (uof.MarketDescriptions, []byte, error) {
 	var mr marketsRsp
-	return mr.Markets, a.getAs(&mr, pathMarketVariant, &params{Lang: lang, MarketID: marketID, Variant: variant})
+	raw, err := a.getAs(&mr, pathMarketVariant, &params{Lang: lang, MarketID: marketID, Variant: variant})
+	return mr.Markets, raw, err
 }
 
 // Fixture lists the fixture for a specified sport event
-func (a *API) Fixture(lang uof.Lang, eventURN uof.URN) (*uof.Fixture, error) {
+func (a *API) Fixture(lang uof.Lang, eventURN uof.URN) (*uof.Fixture, []byte, error) {
 	var fr fixtureRsp
-	return &fr.Fixture, a.getAs(&fr, pathFixture, &params{Lang: lang, EventURN: eventURN})
+	raw, err := a.getAs(&fr, pathFixture, &params{Lang: lang, EventURN: eventURN})
+	return &fr.Fixture, raw, err
 }
 
-func (a *API) Tournament(lang uof.Lang, eventURN uof.URN) (*uof.FixtureTournament, error) {
+func (a *API) Tournament(lang uof.Lang, eventURN uof.URN) (*uof.FixtureTournament, []byte, error) {
 	var ft uof.FixtureTournament
-	return &ft, a.getAs(&ft, pathFixture, &params{Lang: lang, EventURN: eventURN})
+	raw, err := a.getAs(&ft, pathFixture, &params{Lang: lang, EventURN: eventURN})
+	return &ft, raw, err
 }
 
-func (a *API) Tournaments(lang uof.Lang) ([]uof.FixtureTournament, error) {
+func (a *API) Tournaments(lang uof.Lang) ([]uof.FixtureTournament, []byte, error) {
 	var rsp tournamentsRsp
-	return rsp.Tournaments, a.getAs(&rsp, pathTournaments, &params{Lang: lang})
+	raw, err := a.getAs(&rsp, pathTournaments, &params{Lang: lang})
+	return rsp.Tournaments, raw, err
 }
 
-func (a *API) Player(lang uof.Lang, playerID int) (*uof.Player, error) {
+func (a *API) Player(lang uof.Lang, playerID int) (*uof.Player, []byte, error) {
 	var pr playerRsp
-	return &pr.Player, a.getAs(&pr, pathPlayer, &params{Lang: lang, PlayerID: playerID})
+	raw, err := a.getAs(&pr, pathPlayer, &params{Lang: lang, PlayerID: playerID})
+	return &pr.Player, raw, err
 }
 
-func (a *API) Competitor(lang uof.Lang, playerID int) (*uof.CompetitorPlayer, error) {
+func (a *API) Competitor(lang uof.Lang, playerID int) (*uof.CompetitorPlayer, []byte, error) {
 	var cr competitorRsp
-	return &cr.Competitor, a.getAs(&cr, pathCompetitor, &params{Lang: lang, PlayerID: playerID})
+	raw, err := a.getAs(&cr, pathCompetitor, &params{Lang: lang, PlayerID: playerID})
+	return &cr.Competitor, raw, err
 }
 
 type tournamentsRsp struct {
@@ -190,10 +197,10 @@ func (a *API) BookAllLiveMatches(done map[string]bool) (int, map[string]bool, er
 	return booked, done, nil
 }
 
-func (a *API) MatchStatuses(lang uof.Lang) ([]MatchStatus, error) {
+func (a *API) MatchStatuses(lang uof.Lang) ([]MatchStatus, []byte, error) {
 	var ms matchStatusesRsp
-	err := a.getAs(&ms, pathMatchStatuses, &params{Lang: lang})
-	return ms.Stasuses, err
+	raw, err := a.getAs(&ms, pathMatchStatuses, &params{Lang: lang})
+	return ms.Stasuses, raw, err
 }
 
 type matchStatusesRsp struct {

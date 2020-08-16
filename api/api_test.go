@@ -60,7 +60,7 @@ func TestBetCancelSeedData(t *testing.T) {
 	a, err := Staging(context.TODO(), token)
 	assert.NoError(t, err)
 
-	mm, err := a.Markets(uof.LangEN)
+	mm, _, err := a.Markets(uof.LangEN)
 	assert.NoError(t, err)
 
 	buf, err := json.Marshal(mm.Groups())
@@ -70,7 +70,7 @@ func TestBetCancelSeedData(t *testing.T) {
 
 func testMarkets(t *testing.T, a *API) {
 	lang := uof.LangEN
-	mm, err := a.Markets(lang)
+	mm, _, err := a.Markets(lang)
 	assert.Nil(t, err)
 
 	assert.True(t, len(mm) >= 992)
@@ -80,7 +80,7 @@ func testMarkets(t *testing.T, a *API) {
 
 func testMarketVariant(t *testing.T, a *API) {
 	lang := uof.LangEN
-	mm, err := a.MarketVariant(lang, 241, "sr:exact_games:bestof:5")
+	mm, _, err := a.MarketVariant(lang, 241, "sr:exact_games:bestof:5")
 	assert.Nil(t, err)
 
 	assert.Nil(t, err)
@@ -92,11 +92,11 @@ func testMarketVariant(t *testing.T, a *API) {
 
 func testFixture(t *testing.T, a *API) {
 	lang := uof.LangEN
-	f, err := a.Fixture(lang, "sr:match:8696826")
+	f, _, err := a.Fixture(lang, "sr:match:8696826")
 	assert.Nil(t, err)
 	assert.Equal(t, "IK Oddevold", f.Home.Name)
 
-	tf, err := a.Tournament(lang, "vto:season:1856707")
+	tf, _, err := a.Tournament(lang, "vto:season:1856707")
 	assert.Nil(t, err)
 	assert.NotNil(t, tf)
 	//pp(tf)
@@ -104,7 +104,7 @@ func testFixture(t *testing.T, a *API) {
 
 func testPlayer(t *testing.T, a *API) {
 	lang := uof.LangEN
-	p, err := a.Player(lang, 947)
+	p, _, err := a.Player(lang, 947)
 	assert.NoError(t, err)
 	assert.Equal(t, "Lee Barnard", p.FullName)
 }
@@ -159,7 +159,7 @@ func TestMatchStatus(t *testing.T) {
 	a, err := Staging(context.TODO(), token)
 	require.NoError(t, err)
 
-	ms, err := a.MatchStatuses(uof.LangEN)
+	ms, _, err := a.MatchStatuses(uof.LangEN)
 	require.NoError(t, err)
 	pp(ms)
 }
