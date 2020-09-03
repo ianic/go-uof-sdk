@@ -178,6 +178,7 @@ type params struct {
 	MaxDelay           int
 	PlayerID           int
 	MarketID           int
+	SportID            int
 	Variant            string
 	Timestamp          int
 	RequestID          int
@@ -187,6 +188,7 @@ type params struct {
 	UseReplayTimestamp bool
 	Lang               uof.Lang
 	Producer           uof.Producer
+	Date               string
 }
 
 func runTemplate(def string, p *params) string {

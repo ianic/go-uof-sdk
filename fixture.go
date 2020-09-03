@@ -316,11 +316,13 @@ func (t *FixtureTournament) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 	type T FixtureTournament
 	var overlay struct {
 		*T
-		Tournament *struct {
+		CurrentSeason Season `xml:"current_season"`
+		Tournament    *struct {
 			URN      URN      `xml:"id,attr"`
 			Name     string   `xml:"name,attr"`
 			Sport    Sport    `xml:"sport"`
 			Category Category `xml:"category"`
+			Season   Season   `xml:"current_season"`
 		} `xml:"tournament,omitempty"`
 	}
 	overlay.T = (*T)(t)
@@ -330,11 +332,21 @@ func (t *FixtureTournament) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 	if overlay.Tournament != nil {
 		t.Sport = overlay.Tournament.Sport
 		t.Category = overlay.Tournament.Category
-		t.Tournament.ID = overlay.Tournament.URN.ID()
-		t.Tournament.Name = overlay.Tournament.Name
-		t.ID = overlay.Tournament.URN.ID()
-		t.URN = overlay.Tournament.URN
+		if !overlay.Tournament.URN.Empty() {
+			t.Tournament.ID = overlay.Tournament.URN.ID()
+			t.Tournament.Name = overlay.Tournament.Name
+			t.ID = overlay.Tournament.URN.ID()
+			t.URN = overlay.Tournament.URN
+		}
 	}
+	if t.Season.ID == 0 && overlay.CurrentSeason.ID != 0 {
+		t.Season = overlay.CurrentSeason
+	}
+
+	t.Tournament.ID = t.URN.ID()
+	t.Tournament.Name = t.Name
+	t.ID = t.URN.ID()
+
 	return nil
 }
 

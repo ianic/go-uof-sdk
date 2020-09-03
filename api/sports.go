@@ -10,16 +10,19 @@ import (
 )
 
 const (
-	pathMarkets       = "/v1/descriptions/{{.Lang}}/markets.xml?include_mappings={{.IncludeMappings}}"
-	pathMarketVariant = "/v1/descriptions/{{.Lang}}/markets/{{.MarketID}}/variants/{{.Variant}}?include_mappings={{.IncludeMappings}}"
-	pathFixture       = "/v1/sports/{{.Lang}}/sport_events/{{.EventURN}}/fixture.xml"
-	pathPlayer        = "/v1/sports/{{.Lang}}/players/sr:player:{{.PlayerID}}/profile.xml"
-	pathCompetitor    = "/v1/sports/{{.Lang}}/competitors/sr:competitor:{{.PlayerID}}/profile.xml"
-	events            = "/v1/sports/{{.Lang}}/schedules/pre/schedule.xml?start={{.Start}}&limit={{.Limit}}"
-	liveEvents        = "/v1/sports/{{.Lang}}/schedules/live/schedule.xml"
-	pathTournaments   = "/v1/sports/{{.Lang}}/tournaments.xml"
-	pathBookLiveEvent = "/v1/liveodds/booking-calendar/events/{{.EventURN}}/book"
-	pathMatchStatuses = "/v1/descriptions/{{.Lang}}/match_status.xml"
+	pathMarkets         = "/v1/descriptions/{{.Lang}}/markets.xml?include_mappings={{.IncludeMappings}}"
+	pathMarketVariant   = "/v1/descriptions/{{.Lang}}/markets/{{.MarketID}}/variants/{{.Variant}}?include_mappings={{.IncludeMappings}}"
+	pathFixture         = "/v1/sports/{{.Lang}}/sport_events/{{.EventURN}}/fixture.xml"
+	pathPlayer          = "/v1/sports/{{.Lang}}/players/sr:player:{{.PlayerID}}/profile.xml"
+	pathCompetitor      = "/v1/sports/{{.Lang}}/competitors/sr:competitor:{{.PlayerID}}/profile.xml"
+	events              = "/v1/sports/{{.Lang}}/schedules/pre/schedule.xml?start={{.Start}}&limit={{.Limit}}"
+	liveEvents          = "/v1/sports/{{.Lang}}/schedules/live/schedule.xml"
+	pathTournaments     = "/v1/sports/{{.Lang}}/tournaments.xml"
+	pathBookLiveEvent   = "/v1/liveodds/booking-calendar/events/{{.EventURN}}/book"
+	pathMatchStatuses   = "/v1/descriptions/{{.Lang}}/match_status.xml"
+	pathSports          = "/v1/sports/{{.Lang}}/sports.xml"
+	pathSportTournamets = "/v1/sports/{{.Lang}}/sports/sr:sport:{{.SportID}}/tournaments.xml"
+	pathEventForDate    = "/v1/sports/{{.Lang}}/schedules/{{.Date}}/schedule.xml"
 )
 
 // Markets all currently available markets for a language
@@ -67,7 +70,7 @@ func (a *API) Competitor(lang uof.Lang, playerID int) (*uof.CompetitorPlayer, []
 }
 
 type tournamentsRsp struct {
-	Tournaments []uof.FixtureTournament `xml:"tournaments>tournament" json:"tournaments,omitempty" bson:"tournaments,omitempty"`
+	Tournaments []uof.FixtureTournament `xml:"tournament"`
 }
 
 type marketsRsp struct {
@@ -234,4 +237,34 @@ func (o *MatchStatus) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 		o.Sports = sports
 	}
 	return nil
+}
+
+func (a *API) Sports(lang uof.Lang) ([]uof.Sport, []byte, error) {
+	var sr sportsRsp
+	raw, err := a.getAs(&sr, pathSports, &params{Lang: lang})
+	return sr.Sports, raw, err
+}
+
+type sportsRsp struct {
+	Sports []uof.Sport `xml:"sport,omitempty"`
+}
+
+func (a *API) SportTournaments(sportID int, lang uof.Lang) ([]uof.FixtureTournament, []byte, error) {
+	var rsp sportTournamentsRsp
+	raw, err := a.getAs(&rsp, pathSportTournamets, &params{Lang: lang, SportID: sportID})
+	return rsp.Tournaments, raw, err
+}
+
+type sportTournamentsRsp struct {
+	Tournaments []uof.FixtureTournament `xml:"tournaments>tournament"`
+}
+
+func (a *API) EventsForDate(date time.Time, lang uof.Lang) ([]uof.Fixture, []byte, error) {
+	var rsp eventsForDate
+	raw, err := a.getAs(&rsp, pathEventForDate, &params{Lang: lang, Date: date.Format("2006-01-02")})
+	return rsp.Fixtures, raw, err
+}
+
+type eventsForDate struct {
+	Fixtures []uof.Fixture `xml:"sport_event"`
 }

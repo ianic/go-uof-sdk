@@ -116,6 +116,7 @@ func testFixtures(t *testing.T, a *API) {
 	for f := range in {
 		if testing.Verbose() {
 			fmt.Printf("\t%s\n", f.PP())
+			//pp(f)
 		}
 	}
 	go func() {
@@ -136,30 +137,67 @@ func pp(o interface{}) {
 
 func TestListLive(t *testing.T) {
 	t.Skip("interactive test")
-	token, ok := os.LookupEnv(EnvToken)
-	if !ok {
-		t.Skip("integration token not found")
-	}
-
-	a, err := Staging(context.TODO(), token)
-	require.NoError(t, err)
 
 	done := make(map[string]bool)
-	booked, _, err := a.BookAllLiveMatches(done)
+	booked, _, err := staging(t).BookAllLiveMatches(done)
 	require.NoError(t, err)
 	fmt.Println("booked matches", booked)
 }
 
 func TestMatchStatus(t *testing.T) {
 	t.Skip("interactive test")
+
+	ms, _, err := staging(t).MatchStatuses(uof.LangEN)
+	require.NoError(t, err)
+	pp(ms)
+}
+
+func TestSports(t *testing.T) {
+	t.Skip("interactive test")
+
+	ss, _, err := staging(t).Sports(uof.LangEN)
+	require.NoError(t, err)
+	//fmt.Printf("%s\n", buf)
+	pp(ss)
+}
+
+func staging(t *testing.T) *API {
 	token, ok := os.LookupEnv(EnvToken)
 	if !ok {
 		t.Skip("integration token not found")
 	}
 	a, err := Staging(context.TODO(), token)
 	require.NoError(t, err)
+	return a
+}
 
-	ms, _, err := a.MatchStatuses(uof.LangEN)
+func TestTournaments(t *testing.T) {
+	t.Skip("interactive test")
+
+	ts, buf, err := staging(t).Tournaments(uof.LangEN)
 	require.NoError(t, err)
-	pp(ms)
+	fmt.Printf("%s\n", buf)
+	pp(ts)
+	fmt.Printf("count %d\n", len(ts))
+}
+
+func TestSportTournaments(t *testing.T) {
+	t.Skip("interactive test")
+
+	ts, _, err := staging(t).SportTournaments(3, uof.LangEN)
+	require.NoError(t, err)
+	//fmt.Printf("%s\n", buf)
+	pp(ts)
+	fmt.Printf("count %d\n", len(ts))
+}
+
+func TestEventsForDate(t *testing.T) {
+	t.Skip("interactive test")
+
+	date := time.Now()
+	ts, _, err := staging(t).EventsForDate(date, uof.LangEN)
+	require.NoError(t, err)
+	//fmt.Printf("%s\n", buf)
+	pp(ts)
+	fmt.Printf("count %d\n", len(ts))
 }
