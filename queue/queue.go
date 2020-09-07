@@ -123,7 +123,6 @@ func dial(ctx context.Context, server, bookmakerID, token string, bind int8) (*C
 	}
 	conn, err := amqp.DialTLS(addr, tls)
 	if err != nil {
-		fmt.Println(addr)
 		return nil, uof.Notice("conn.Dial", err)
 	}
 

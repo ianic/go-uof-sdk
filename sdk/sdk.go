@@ -244,6 +244,9 @@ func Fixtures(to time.Time) Option {
 	}
 }
 
+// BookLiveMatches books all available live matches.
+// Repeats request for all available live matches every (param).
+// Books all not already booked.
 func BookLiveMatches(every time.Duration) Option {
 	return func(c *Config) {
 		c.BookLiveEvery = every
