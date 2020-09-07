@@ -3,6 +3,7 @@ package pipe
 import (
 	"context"
 	"fmt"
+	"math/rand"
 	"sync"
 	"time"
 
@@ -130,6 +131,9 @@ func (r *recovery) requestRecovery(p *recoveryProducer) {
 }
 
 func (r *recovery) nextRequestID() int {
+	if r.requestID == 0 {
+		r.requestID = rand.Intn(1000) + 100
+	}
 	r.requestID++
 	return r.requestID
 }
