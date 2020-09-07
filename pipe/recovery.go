@@ -113,8 +113,9 @@ func (r *recovery) requestRecovery(p *recoveryProducer) {
 	go func(producer uof.Producer, timestamp int, requestID int) {
 		defer r.subProcs.Done()
 		for {
+			//log.Println("recovery request", producer.Code(), timestamp, requestID)
 			op := fmt.Sprintf("recovery for %s, timestamp: %d, requestID: %d", producer.Code(), timestamp, requestID)
-			r.log(fmt.Errorf("starting %s", op))
+			//r.log(fmt.Errorf("starting %s", op))
 			err := r.api.RequestRecovery(producer, timestamp, requestID)
 			if err == nil {
 				return
@@ -163,6 +164,7 @@ func (r *recovery) alive(producer uof.Producer, timestamp int, subscribed int) {
 // handles snapshot complete messages
 // set that producer state to active
 func (r *recovery) snapshotComplete(producer uof.Producer, requestID int) {
+	//log.Println("snapshot complete", producer.String(), requestID)
 	p := r.find(producer)
 	if p == nil {
 		r.log(fmt.Errorf("unexpected producer %s", producer))
