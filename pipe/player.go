@@ -32,17 +32,30 @@ func Player(api playerAPI, languages []uof.Lang) InnerStage {
 	return StageWithSubProcessesSync(p.loop)
 }
 
+type playerGetRequest struct {
+	oddsChange  *uof.OddsChange
+	requestedAt int
+}
+
 func (p *player) loop(in <-chan *uof.Message, out chan<- *uof.Message, errc chan<- error) *sync.WaitGroup {
 	p.errc, p.out = errc, out
+
+	requests := make(chan playerGetRequest, 1024)
+	go func() {
+		for req := range requests {
+			req.oddsChange.EachPlayer(func(playerID int) {
+				p.get(playerID, req.requestedAt)
+			})
+		}
+	}()
 
 	for m := range in {
 		out <- m
 		if m.Is(uof.MessageTypeOddsChange) {
-			m.OddsChange.EachPlayer(func(playerID int) {
-				p.get(playerID, m.ReceivedAt)
-			})
+			requests <- playerGetRequest{oddsChange: m.OddsChange, requestedAt: m.ReceivedAt}
 		}
 	}
+	close(requests)
 	return p.subProcs
 }
 
