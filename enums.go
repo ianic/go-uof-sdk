@@ -90,22 +90,23 @@ func (t *Team) PtrVal() *int8 {
 	return &v
 }
 
+// Reference: https://docs.betradar.com/display/BD/UOF+-+Live+information+and+resulting
 type EventStatus int8
 
 const (
-	EventStatusNotStarted EventStatus = 0
-	EventStatusLive       EventStatus = 1
+	EventStatusNotStarted EventStatus = 0 // The match has not started yet. (Alternatively, Betradar has no live coverage of the event, the match has started but we do not know this. The match will then move to closed when Betradar enters the match results)
+	EventStatusLive       EventStatus = 1 // The match is live
 	EventStatusSuspended  EventStatus = 2 // Used by the Premium Cricket odds producer
-	EventStatusEnded      EventStatus = 3
-	EventStatusClosed     EventStatus = 4
+	EventStatusEnded      EventStatus = 3 // The match has finished, but results have not been confirmed yet.
+	EventStatusClosed     EventStatus = 4 // The match is finished, results confirmed, and no more changes are expected to the results (only for events covered by pre-match producer).
 	// Only one of the above statuses are possible in the odds_change message in
 	// the feed. However please note that other states are available in the API,
 	// but will not appear in the odds_change message. These are as following:
-	EventStatusCancelled   EventStatus = 5
-	EventStatusDelayed     EventStatus = 6
-	EventStatusInterrupted EventStatus = 7
-	EventStatusPostponed   EventStatus = 8
-	EventStatusAbandoned   EventStatus = 9
+	EventStatusCancelled   EventStatus = 5 // The sport event (either the actual match, or this Betradar representation of the match) has been cancelled
+	EventStatusDelayed     EventStatus = 6 // The sport event start has been delayed from scheduled start (most often seen for tennis).
+	EventStatusInterrupted EventStatus = 7 // The sport event looks to be interrupted for a longer period than a few minutes
+	EventStatusPostponed   EventStatus = 8 // The sport event has been postponed and will be played at a later date. Typically, if the later date is more than 3 days away. This sport event id will be cancelled and replaced by a new id. If the match is postponed to just one or two days from now, the same sport-id will change its state just before match start.
+	EventStatusAbandoned   EventStatus = 9 // Used to indicate that Betradar has no live coverage or has lost live coverage but match is still likely ongoing.
 )
 
 func (s EventStatus) Val() int8 {
