@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
@@ -193,7 +194,7 @@ func (a *API) BookAllLiveMatches(done map[string]bool) (int, map[string]bool, er
 			}
 			return booked, done, err
 		}
-		// fmt.Printf("OK\n")
+		fmt.Printf("booked live match %sOK\n", key)
 		done[key] = true
 		booked++
 	}

@@ -2,6 +2,7 @@ package sdk
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/minus5/go-uof-sdk"
@@ -84,9 +85,13 @@ func Run(ctx context.Context, options ...Option) (<-chan error, error) {
 func bookLiveLoop(ctx context.Context, api *api.API, every time.Duration) {
 	done := make(map[string]bool)
 	for {
-		//var err error
-		//var booked int
-		_, done, _ = api.BookAllLiveMatches(done)
+		var err error
+		var booked int
+		booked, done, err = api.BookAllLiveMatches(done)
+		if err != nil {
+			fmt.Printf("book live matches error %s\n", err)
+		}
+		fmt.Printf("number of live matches booked: %d", booked)
 		// TODO some kind of notification about number of booked matches
 		select {
 		case <-ctx.Done():
